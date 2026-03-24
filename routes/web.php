@@ -12,8 +12,8 @@ Route::get('/login-admin', function () {
     return view('admin.login');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
+Route::get('/panel', function () {
+    return view('admin.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -21,5 +21,14 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::resource('events', App\Http\Controllers\EventController::class)->middleware(['auth']);
+
+Route::resource('schedules', App\Http\Controllers\ScheduleController::class)->middleware(['auth']);
+
+Route::resource('categories', App\Http\Controllers\CategoryController::class)->middleware(['auth']);
+
+Route::resource('locations', App\Http\Controllers\LocationController::class)->middleware(['auth']);
+
 
 require __DIR__.'/auth.php';
