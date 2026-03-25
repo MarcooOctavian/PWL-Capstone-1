@@ -10,7 +10,19 @@ Route::get('/', function () {
 Route::get('/login-admin', function () {
     // Ini akan memanggil file resources/views/admin/login.blade.php
     return view('admin.login');
-});
+})->name('admin.login');
+
+Route::get('/admin/register', function () {
+    return view('admin.register');
+})->name('admin.register');
+
+Route::get('/admin/forgot-password', function () {
+    return view('admin.forgot-password');
+})->name('admin.forgot-password');
+
+Route::get('/admin/recover-password', function () {
+    return view('admin.recover-password');
+})->name('admin.recover-password-password');
 
 Route::get('/panel', function () {
     return view('admin.dashboard');
