@@ -16,27 +16,22 @@
 
 
     <!-- Css Styles -->
-    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
-    <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
-    <link rel="stylesheet" href="css/elegant-icons.css" type="text/css">
-    <link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css">
-    <link rel="stylesheet" href="css/magnific-popup.css" type="text/css">
-    <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
-    <link rel="stylesheet" href="css/style.css" type="text/css">
+    <link rel="stylesheet" href="{{ asset('user/css/bootstrap.min.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ asset('user/css/font-awesome.min.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ asset('user/css/elegant-icons.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ asset('user/css/owl.carousel.min.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ asset('user/css/magnific-popup.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ asset('user/css/slicknav.min.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ asset('user/css/style.css') }}" type="text/css">
 </head>
 
 <body>
-    <!-- Page Preloder -->
-    <div id="preloder">
-        <div class="loader"></div>
-    </div>
-
     <!-- Header Section Begin -->
     <header class="header-section">
         <div class="container">
             <div class="logo">
                 <a href="./index.html">
-                    <img src="img/logo.png" alt="">
+                    <img src="{{ asset('user/img/logo.png') }}" alt="">
                 </a>
             </div>
             <div class="nav-menu">
@@ -65,7 +60,7 @@
     <!-- Header End -->
 
     <!-- Hero Section Begin -->
-    <section class="hero-section set-bg" data-setbg="img/hero.jpg">
+    <section class="hero-section set-bg" data-setbg="{{ asset('user/img/hero.jpg') }}">
         <div class="container">
             <div class="row">
                 <div class="col-lg-7">
@@ -76,7 +71,7 @@
                     </div>
                 </div>
                 <div class="col-lg-5">
-                    <img src="img/hero-right.png" alt="">
+                    <img src="{{ asset('user/img/hero-right.png') }}" alt="">
                 </div>
             </div>
         </div>
@@ -124,7 +119,7 @@
             <div class="row">
                 <div class="col-lg-6">
                     <div class="ha-pic">
-                        <img src="img/h-about.jpg" alt="">
+                        <img src="{{ asset('user/img/h-about.jpg') }}" alt="">
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -161,7 +156,7 @@
                 </div>
             </div>
         </div>
-        <div class="member-item set-bg" data-setbg="img/team-member/member-1.jpg">
+        <div class="member-item set-bg" data-setbg="{{ asset('user/img/team-member/member-1.jpg') }}">
             <div class="mi-social">
                 <div class="mi-social-inner bg-gradient">
                     <a href="#"><i class="fa fa-facebook"></i></a>
@@ -175,7 +170,7 @@
                 <span>Speaker</span>
             </div>
         </div>
-        <div class="member-item set-bg" data-setbg="img/team-member/member-2.jpg">
+        <div class="member-item set-bg" data-setbg="{{ asset('user/img/team-member/member-2.jpg') }}">
             <div class="mi-social">
                 <div class="mi-social-inner bg-gradient">
                     <a href="#"><i class="fa fa-facebook"></i></a>
@@ -189,7 +184,7 @@
                 <span>Speaker</span>
             </div>
         </div>
-        <div class="member-item set-bg" data-setbg="img/team-member/member-3.jpg">
+        <div class="member-item set-bg" data-setbg="{{ asset('user/img/team-member/member-3.jpg') }}">
             <div class="mi-social">
                 <div class="mi-social-inner bg-gradient">
                     <a href="#"><i class="fa fa-facebook"></i></a>
@@ -203,7 +198,7 @@
                 <span>Speaker</span>
             </div>
         </div>
-        <div class="member-item set-bg" data-setbg="img/team-member/member-4.jpg">
+        <div class="member-item set-bg" data-setbg="{{ asset('user/img/team-member/member-4.jpg') }}">
             <div class="mi-social">
                 <div class="mi-social-inner bg-gradient">
                     <a href="#"><i class="fa fa-facebook"></i></a>
@@ -217,7 +212,7 @@
                 <span>Speaker</span>
             </div>
         </div>
-        <div class="member-item set-bg" data-setbg="img/team-member/member-5.jpg">
+        <div class="member-item set-bg" data-setbg="{{ asset('user/img/team-member/member-5.jpg') }}">
             <div class="mi-social">
                 <div class="mi-social-inner bg-gradient">
                     <a href="#"><i class="fa fa-facebook"></i></a>
@@ -231,7 +226,7 @@
                 <span>Speaker</span>
             </div>
         </div>
-        <div class="member-item set-bg" data-setbg="img/team-member/member-6.jpg">
+        <div class="member-item set-bg" data-setbg="{{ asset('user/img/team-member/member-6.jpg') }}">
             <div class="mi-social">
                 <div class="mi-social-inner bg-gradient">
                     <a href="#"><i class="fa fa-facebook"></i></a>
@@ -245,7 +240,7 @@
                 <span>Speaker</span>
             </div>
         </div>
-        <div class="member-item set-bg" data-setbg="img/team-member/member-7.jpg">
+        <div class="member-item set-bg" data-setbg="{{ asset('user/img/team-member/member-7.jpg') }}">
             <div class="mi-social">
                 <div class="mi-social-inner bg-gradient">
                     <a href="#"><i class="fa fa-facebook"></i></a>
@@ -259,7 +254,7 @@
                 <span>Speaker</span>
             </div>
         </div>
-        <div class="member-item set-bg" data-setbg="img/team-member/member-8.jpg">
+        <div class="member-item set-bg" data-setbg="{{ asset('user/img/team-member/member-8.jpg') }}">
             <div class="mi-social">
                 <div class="mi-social-inner bg-gradient">
                     <a href="#"><i class="fa fa-facebook"></i></a>
@@ -273,7 +268,7 @@
                 <span>Speaker</span>
             </div>
         </div>
-        <div class="member-item set-bg" data-setbg="img/team-member/member-9.jpg">
+        <div class="member-item set-bg" data-setbg="{{ asset('user/img/team-member/member-9.jpg') }}">
             <div class="mi-social">
                 <div class="mi-social-inner bg-gradient">
                     <a href="#"><i class="fa fa-facebook"></i></a>
@@ -287,7 +282,7 @@
                 <span>Speaker</span>
             </div>
         </div>
-        <div class="member-item set-bg" data-setbg="img/team-member/member-10.jpg">
+        <div class="member-item set-bg" data-setbg="{{ asset('user/img/team-member/member-10.jpg') }}">
             <div class="mi-social">
                 <div class="mi-social-inner bg-gradient">
                     <a href="#"><i class="fa fa-facebook"></i></a>
@@ -357,7 +352,7 @@
                                         <div class="row">
                                             <div class="col-lg-3">
                                                 <div class="sc-pic">
-                                                    <img src="img/schedule/schedule-1.jpg" alt="">
+                                                    <img src="{{ asset('user/img/schedule/schedule-1.jpg') }}" alt="">
                                                 </div>
                                             </div>
                                             <div class="col-lg-5">
@@ -385,7 +380,7 @@
                                         <div class="row">
                                             <div class="col-lg-3">
                                                 <div class="sc-pic">
-                                                    <img src="img/schedule/schedule-2.jpg" alt="">
+                                                    <img src="{{ asset('user/img/schedule/schedule-2.jpg') }}" alt="">
                                                 </div>
                                             </div>
                                             <div class="col-lg-5">
@@ -413,7 +408,7 @@
                                         <div class="row">
                                             <div class="col-lg-3">
                                                 <div class="sc-pic">
-                                                    <img src="img/schedule/schedule-3.jpg" alt="">
+                                                    <img src="{{ asset('user/img/schedule/schedule-3.jpg') }}" alt="">
                                                 </div>
                                             </div>
                                             <div class="col-lg-5">
@@ -441,7 +436,7 @@
                                         <div class="row">
                                             <div class="col-lg-3">
                                                 <div class="sc-pic">
-                                                    <img src="img/schedule/schedule-4.jpg" alt="">
+                                                    <img src="{{ asset('user/img/schedule/schedule-4.jpg') }}" alt="">
                                                 </div>
                                             </div>
                                             <div class="col-lg-5">
@@ -471,7 +466,7 @@
                                         <div class="row">
                                             <div class="col-lg-3">
                                                 <div class="sc-pic">
-                                                    <img src="img/schedule/schedule-1.jpg" alt="">
+                                                    <img src="{{ asset('user/img/schedule/schedule-1.jpg') }}" alt="">
                                                 </div>
                                             </div>
                                             <div class="col-lg-5">
@@ -499,7 +494,7 @@
                                         <div class="row">
                                             <div class="col-lg-3">
                                                 <div class="sc-pic">
-                                                    <img src="img/schedule/schedule-2.jpg" alt="">
+                                                    <img src="{{ asset('user/img/schedule/schedule-2.jpg') }}" alt="">
                                                 </div>
                                             </div>
                                             <div class="col-lg-5">
@@ -527,7 +522,7 @@
                                         <div class="row">
                                             <div class="col-lg-3">
                                                 <div class="sc-pic">
-                                                    <img src="img/schedule/schedule-3.jpg" alt="">
+                                                    <img src="{{ asset('user/img/schedule/schedule-3.jpg') }}" alt="">
                                                 </div>
                                             </div>
                                             <div class="col-lg-5">
@@ -555,7 +550,7 @@
                                         <div class="row">
                                             <div class="col-lg-3">
                                                 <div class="sc-pic">
-                                                    <img src="img/schedule/schedule-4.jpg" alt="">
+                                                    <img src="{{ asset('user/img/schedule/schedule-4.jpg') }}" alt="">
                                                 </div>
                                             </div>
                                             <div class="col-lg-5">
@@ -585,7 +580,7 @@
                                         <div class="row">
                                             <div class="col-lg-3">
                                                 <div class="sc-pic">
-                                                    <img src="img/schedule/schedule-1.jpg" alt="">
+                                                    <img src="{{ asset('user/img/schedule/schedule-1.jpg') }}" alt="">
                                                 </div>
                                             </div>
                                             <div class="col-lg-5">
@@ -613,7 +608,7 @@
                                         <div class="row">
                                             <div class="col-lg-3">
                                                 <div class="sc-pic">
-                                                    <img src="img/schedule/schedule-2.jpg" alt="">
+                                                    <img src="{{ asset('user/img/schedule/schedule-2.jpg') }}" alt="">
                                                 </div>
                                             </div>
                                             <div class="col-lg-5">
@@ -641,7 +636,7 @@
                                         <div class="row">
                                             <div class="col-lg-3">
                                                 <div class="sc-pic">
-                                                    <img src="img/schedule/schedule-3.jpg" alt="">
+                                                    <img src="{{ asset('user/img/schedule/schedule-3.jpg') }}" alt="">
                                                 </div>
                                             </div>
                                             <div class="col-lg-5">
@@ -669,7 +664,7 @@
                                         <div class="row">
                                             <div class="col-lg-3">
                                                 <div class="sc-pic">
-                                                    <img src="img/schedule/schedule-4.jpg" alt="">
+                                                    <img src="{{ asset('user/img/schedule/schedule-4.jpg') }}" alt="">
                                                 </div>
                                             </div>
                                             <div class="col-lg-5">
@@ -699,7 +694,7 @@
                                         <div class="row">
                                             <div class="col-lg-3">
                                                 <div class="sc-pic">
-                                                    <img src="img/schedule/schedule-1.jpg" alt="">
+                                                    <img src="{{ asset('user/img/schedule/schedule-1.jpg') }}" alt="">
                                                 </div>
                                             </div>
                                             <div class="col-lg-5">
@@ -727,7 +722,7 @@
                                         <div class="row">
                                             <div class="col-lg-3">
                                                 <div class="sc-pic">
-                                                    <img src="img/schedule/schedule-2.jpg" alt="">
+                                                    <img src="{{ asset('user/img/schedule/schedule-2.jpg') }}" alt="">
                                                 </div>
                                             </div>
                                             <div class="col-lg-5">
@@ -755,7 +750,7 @@
                                         <div class="row">
                                             <div class="col-lg-3">
                                                 <div class="sc-pic">
-                                                    <img src="img/schedule/schedule-3.jpg" alt="">
+                                                    <img src="{{ asset('user/img/schedule/schedule-3.jpg') }}" alt="">
                                                 </div>
                                             </div>
                                             <div class="col-lg-5">
@@ -783,7 +778,7 @@
                                         <div class="row">
                                             <div class="col-lg-3">
                                                 <div class="sc-pic">
-                                                    <img src="img/schedule/schedule-4.jpg" alt="">
+                                                    <img src="{{ asset('user/img/schedule/schedule-4.jpg') }}" alt="">
                                                 </div>
                                             </div>
                                             <div class="col-lg-5">
@@ -813,7 +808,7 @@
                                         <div class="row">
                                             <div class="col-lg-3">
                                                 <div class="sc-pic">
-                                                    <img src="img/schedule/schedule-1.jpg" alt="">
+                                                    <img src="{{ asset('user/img/schedule/schedule-1.jpg') }}" alt="">
                                                 </div>
                                             </div>
                                             <div class="col-lg-5">
@@ -841,7 +836,7 @@
                                         <div class="row">
                                             <div class="col-lg-3">
                                                 <div class="sc-pic">
-                                                    <img src="img/schedule/schedule-2.jpg" alt="">
+                                                    <img src="{{ asset('user/img/schedule/schedule-2.jpg') }}" alt="">
                                                 </div>
                                             </div>
                                             <div class="col-lg-5">
@@ -869,7 +864,7 @@
                                         <div class="row">
                                             <div class="col-lg-3">
                                                 <div class="sc-pic">
-                                                    <img src="img/schedule/schedule-3.jpg" alt="">
+                                                    <img src="{{ asset('user/img/schedule/schedule-3.jpg') }}" alt="">
                                                 </div>
                                             </div>
                                             <div class="col-lg-5">
@@ -897,7 +892,7 @@
                                         <div class="row">
                                             <div class="col-lg-3">
                                                 <div class="sc-pic">
-                                                    <img src="img/schedule/schedule-4.jpg" alt="">
+                                                    <img src="{{ asset('user/img/schedule/schedule-4.jpg') }}" alt="">
                                                 </div>
                                             </div>
                                             <div class="col-lg-5">
@@ -930,7 +925,7 @@
     <!-- Schedule Section End -->
 
     <!-- Pricing Section Begin -->
-    <section class="pricing-section set-bg spad" data-setbg="img/pricing-bg.jpg">
+    <section class="pricing-section set-bg spad" data-setbg="{{ asset('user/img/pricing-bg.jpg') }}">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -1012,7 +1007,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-6">
-                    <div class="latest-item set-bg large-item" data-setbg="img/blog/latest-b/latest-1.jpg">
+                    <div class="latest-item set-bg large-item" data-setbg="{{ asset('user/img/blog/latest-b/latest-1.jpg') }}">
                         <div class="li-tag">Marketing</div>
                         <div class="li-text">
                             <h4><a href="./blog-details.html">Improve You Business Cards And Enchan Your Sales</a></h4>
@@ -1021,14 +1016,14 @@
                     </div>
                 </div>
                 <div class="col-lg-6">
-                    <div class="latest-item set-bg" data-setbg="img/blog/latest-b/latest-2.jpg">
+                    <div class="latest-item set-bg" data-setbg="{{ asset('user/img/blog/latest-b/latest-2.jpg') }}">
                         <div class="li-tag">Experience</div>
                         <div class="li-text">
                             <h5><a href="./blog-details.html">All users on MySpace will know that there are millions of people out there.</a></h5>
                             <span><i class="fa fa-clock-o"></i> 19th May, 2019</span>
                         </div>
                     </div>
-                    <div class="latest-item set-bg" data-setbg="img/blog/latest-b/latest-3.jpg">
+                    <div class="latest-item set-bg" data-setbg="{{ asset('user/img/blog/latest-b/latest-3.jpg') }}">
                         <div class="li-tag">Marketing</div>
                         <div class="li-text">
                             <h5><a href="./blog-details.html">A Pocket PC is a handheld computer, which features many of the same capabilities.</a></h5>
@@ -1044,7 +1039,7 @@
     <!-- Newslatter Section Begin -->
     <section class="newslatter-section">
         <div class="container">
-            <div class="newslatter-inner set-bg" data-setbg="img/newslatter-bg.jpg">
+            <div class="newslatter-inner set-bg" data-setbg="{{ asset('user/img/newslatter-bg.jpg') }}">
                 <div class="ni-text">
                     <h3>Subscribe Newsletter</h3>
                     <p>Subscribe to our newsletter and don’t miss anything</p>
@@ -1106,32 +1101,32 @@
             <div class="partner-logo owl-carousel">
                 <a href="#" class="pl-table">
                     <div class="pl-tablecell">
-                        <img src="img/partner-logo/logo-1.png" alt="">
+                        <img src="{{ asset('user/img/partner-logo/logo-1.png') }}" alt="">
                     </div>
                 </a>
                 <a href="#" class="pl-table">
                     <div class="pl-tablecell">
-                        <img src="img/partner-logo/logo-2.png" alt="">
+                        <img src="{{ asset('user/img/partner-logo/logo-2.png') }}" alt="">
                     </div>
                 </a>
                 <a href="#" class="pl-table">
                     <div class="pl-tablecell">
-                        <img src="img/partner-logo/logo-3.png" alt="">
+                        <img src="{{ asset('user/img/partner-logo/logo-3.png') }}" alt="">
                     </div>
                 </a>
                 <a href="#" class="pl-table">
                     <div class="pl-tablecell">
-                        <img src="img/partner-logo/logo-4.png" alt="">
+                        <img src="{{ asset('user/img/partner-logo/logo-4.png') }}" alt="">
                     </div>
                 </a>
                 <a href="#" class="pl-table">
                     <div class="pl-tablecell">
-                        <img src="img/partner-logo/logo-5.png" alt="">
+                        <img src="{{ asset('user/img/partner-logo/logo-5.png') }}" alt="">
                     </div>
                 </a>
                 <a href="#" class="pl-table">
                     <div class="pl-tablecell">
-                        <img src="img/partner-logo/logo-6.png" alt="">
+                        <img src="{{ asset('user/img/partner-logo/logo-6.png') }}" alt="">
                     </div>
                 </a>
             </div>
@@ -1139,7 +1134,7 @@
                 <div class="col-lg-12">
                     <div class="footer-text">
                         <div class="ft-logo">
-                            <a href="#" class="footer-logo"><img src="img/footer-logo.png" alt=""></a>
+                            <a href="#" class="footer-logo"><img src="{{ asset('user/img/footer-logo.png') }}" alt=""></a>
                         </div>
                         <ul>
                             <li><a href="#">Home</a></li>
@@ -1166,13 +1161,13 @@
     <!-- Footer Section End -->
 
     <!-- Js Plugins -->
-    <script src="js/jquery-3.3.1.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/jquery.magnific-popup.min.js"></script>
-    <script src="js/jquery.countdown.min.js"></script>
-    <script src="js/jquery.slicknav.js"></script>
-    <script src="js/owl.carousel.min.js"></script>
-    <script src="js/main.js"></script>
+    <script src="{{ asset('user/js/jquery-3.3.1.min.js') }}"></script>
+    <script src="{{ asset('user/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('user/js/jquery.magnific-popup.min.js') }}"></script>
+    <script src="{{ asset('user/js/jquery.countdown.min.js') }}"></script>
+    <script src="{{ asset('user/js/jquery.slicknav.js') }}"></script>
+    <script src="{{ asset('user/js/owl.carousel.min.js') }}"></script>
+    <script src="{{ asset('user/js/main.js') }}"></script>
 </body>
 
 </html>
