@@ -28,6 +28,14 @@ Route::get('/home', function () {
     return view('user.index');
 })->name('user.home');
 
+Route::get('/schedule', function () {
+    return view('user.schedule');
+});
+
+Route::get('/speaker', function () {
+    return view('user.speaker');
+});
+
 Route::get('/panel', function () {
     return view('admin.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
