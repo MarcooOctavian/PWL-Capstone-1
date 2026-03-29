@@ -36,6 +36,10 @@ Route::get('/speaker', function () {
     return view('user.speaker');
 });
 
+Route::get('/event-detail', function () {
+    return view('user.blog-details');
+});
+
 Route::get('/panel', function () {
     return view('admin.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
