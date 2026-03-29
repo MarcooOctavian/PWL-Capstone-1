@@ -48,6 +48,10 @@ Route::get('/user-register', function () {
     return view('user.register');
 });
 
+Route::get('/checkout', function () {
+    return view('user.checkout');
+});
+
 Route::get('/panel', function () {
     return view('admin.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
