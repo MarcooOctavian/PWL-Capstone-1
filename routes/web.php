@@ -52,6 +52,10 @@ Route::get('/checkout', function () {
     return view('user.checkout');
 });
 
+Route::get('/user-profile', function () {
+    return view('user.profile');
+});
+
 Route::get('/panel', function () {
     return view('admin.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
