@@ -24,6 +24,10 @@ Route::get('/admin/recover-password', function () {
     return view('admin.recover-password');
 })->name('admin.recover-password-password');
 
+Route::get('/home', function () {
+    return view('user.index');
+})->name('user.home');
+
 Route::get('/panel', function () {
     return view('admin.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
