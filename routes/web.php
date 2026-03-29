@@ -40,6 +40,14 @@ Route::get('/event-detail', function () {
     return view('user.blog-details');
 });
 
+Route::get('/user-login', function () {
+    return view('user.login');
+});
+
+Route::get('/user-register', function () {
+    return view('user.register');
+});
+
 Route::get('/panel', function () {
     return view('admin.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
