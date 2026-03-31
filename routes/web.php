@@ -44,7 +44,7 @@ Route::get('/user-login', function () {
     return view('user.login');
 });
 
-Route::get('/user-register', function () {
+Route::get('href="/user-register"', function () {
     return view('user.register');
 });
 

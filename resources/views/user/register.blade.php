@@ -22,7 +22,7 @@
                             </div>
                             <div class="col-lg-12 text-center">
                                 <button type="submit" class="site-btn" style="width: 100%;">Register</button>
-                                <p class="mt-4">Sudah punya akun? <a href="/login" style="color: #f1592a; font-weight: bold;">Login di sini</a></p>
+                                <p class="mt-4">Sudah punya akun? <a href="/user-login" style="color: #f1592a; font-weight: bold;">Login di sini</a></p>
                             </div>
                         </div>
                     </form>
