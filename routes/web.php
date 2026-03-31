@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return redirect()->route('admin.login');
@@ -23,6 +24,8 @@ Route::get('/admin/forgot-password', function () {
 Route::get('/admin/recover-password', function () {
     return view('admin.recover-password');
 })->name('admin.recover-password-password');
+
+Route::resource('users', UserController::class);
 
 Route::get('/home', function () {
     return view('user.index');
