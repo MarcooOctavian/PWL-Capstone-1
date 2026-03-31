@@ -48,6 +48,10 @@ Route::get('/user-register', function () {
     return view('user.register');
 });
 
+Route::get('/e-ticket', function () {
+    return view('user.e-ticket');
+});
+
 Route::get('/checkout', function () {
     return view('user.checkout');
 });

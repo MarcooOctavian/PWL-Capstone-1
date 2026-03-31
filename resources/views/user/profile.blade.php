@@ -57,7 +57,7 @@
                                                 <span style="color: #28a745; font-weight: bold;">Paid</span>
                                             </td>
                                             <td class="hover-bg">
-                                                <a href="#" class="primary-btn" style="padding: 10px 20px;">Lihat E-Ticket</a>
+                                                <a href="/e-ticket" class="primary-btn" style="padding: 10px 20px;">Lihat E-Ticket</a>
                                             </td>
                                         </tr>
                                         <tr>
