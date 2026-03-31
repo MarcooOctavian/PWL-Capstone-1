@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'All Users')
+@section('title', 'Ticket Types')
 
 @section('content')
     <div class="row">
@@ -12,18 +12,12 @@
                 </div>
             @endif
 
-            @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show">
-                    {{ session('error') }}
-                    <button type="button" class="close" data-dismiss="alert">&times;</button>
-                </div>
-            @endif
             <div class="card card-primary card-outline">
                 <div class="card-header">
-                    <h3 class="card-title">User Management</h3>
+                    <h3 class="card-title">Ticket Types Management</h3>
                     <div class="card-tools">
-                        <a href="{{ route('users.create') }}" class="btn btn-sm btn-primary">
-                            <i class="fas fa-plus"></i> Add User
+                        <a href="{{ route('ticket-types.create') }}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-plus"></i> Add Ticket Type
                         </a>
                     </div>
                 </div>
@@ -33,36 +27,30 @@
                         <thead>
                         <tr>
                             <th>ID</th>
+                            <th>Event</th>
                             <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Role</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Max Purchase</th>
                             <th>Actions</th>
                         </tr>
                         </thead>
 
                         <tbody>
-                        @foreach($users as $user)
+                        @foreach($ticketTypes as $tt)
                             <tr>
-                                <td>{{ $user->id }}</td>
-                                <td>{{ $user->name }}</td>
-                                <td>{{ $user->email }}</td>
-                                <td>{{ $user->phone }}</td>
+                                <td>{{ $tt->id }}</td>
+                                <td>{{ $tt->event->title ?? 'N/A' }}</td>
+                                <td>{{ $tt->name }}</td>
+                                <td>Rp {{ number_format($tt->price, 0, ',', '.') }}</td>
+                                <td>{{ $tt->stock }}</td>
+                                <td>{{ $tt->max_purchase }}</td>
                                 <td>
-                                    @if($user->role == 1)
-                                        <span class="badge badge-success">Admin</span>
-                                    @elseif($user->role == 2)
-                                        <span class="badge badge-warning">Organizer</span>
-                                    @else
-                                        <span class="badge badge-secondary">User</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-warning">
+                                    <a href="{{ route('ticket-types.edit', $tt->id) }}" class="btn btn-sm btn-warning">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>
 
-                                    <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline delete-form">
+                                    <form action="{{ route('ticket-types.destroy', $tt->id) }}" method="POST" class="d-inline delete-form">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-danger">
@@ -73,12 +61,11 @@
                             </tr>
                         @endforeach
 
-                        @if($users->isEmpty())
+                        @if($ticketTypes->isEmpty())
                             <tr>
-                                <td colspan="6" class="text-center">No users found</td>
+                                <td colspan="7" class="text-center">No ticket types found</td>
                             </tr>
                         @endif
-
                         </tbody>
                     </table>
                 </div>

@@ -24,7 +24,7 @@
               <th>Location</th>
               <th>Date</th>
               <th>Status</th>
-              <th>Quota</th>
+
               <th>Actions</th>
             </tr>
           </thead>
@@ -45,7 +45,7 @@
                     <span class="badge badge-success">{{ ucfirst($event->status) }}</span>
                 @endif
               </td>
-              <td>{{ $event->quota }} People</td>
+
               <td>
                 <a href="{{ route('events.edit', $event->id) }}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i> Edit</a>
                 <form action="{{ route('events.destroy', $event->id) }}" method="POST" class="d-inline delete-form">

@@ -17,7 +17,6 @@ class Event extends Model
         'description',
         'banner_url',
         'date',
-        'quota',
         'status',
     ];
 
@@ -39,5 +38,10 @@ class Event extends Model
     public function schedules()
     {
         return $this->hasMany(Schedule::class);
+    }
+
+    public function typeTickets()
+    {
+        return $this->hasMany(TypeTicket::class);
     }
 }

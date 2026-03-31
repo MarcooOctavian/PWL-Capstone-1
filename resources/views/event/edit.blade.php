@@ -48,7 +48,7 @@
           </div>
 
           <div class="form-group row">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <label>Status</label>
                 <select name="status" class="form-control @error('status') is-invalid @enderror" required>
                   <option value="Upcoming" {{ old('status', $event->status) == 'Upcoming' ? 'selected' : '' }}>Upcoming</option>
@@ -56,11 +56,6 @@
                   <option value="Completed" {{ old('status', $event->status) == 'Completed' ? 'selected' : '' }}>Completed</option>
                 </select>
                 @error('status')<div class="invalid-feedback">{{ $message }}</div>@enderror
-            </div>
-            <div class="col-sm-6">
-                <label>Quota (Max Attendees)</label>
-                <input type="number" name="quota" class="form-control @error('quota') is-invalid @enderror" value="{{ old('quota', $event->quota) }}" required>
-                @error('quota')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
           </div>
 

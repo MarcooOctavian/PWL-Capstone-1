@@ -9,28 +9,30 @@
                         <h2>Checkout Tiket</h2>
                         <p>Silakan pilih jenis tiket dan lengkapi data diri Anda.</p>
                     </div>
-                    <form action="#" class="comment-form">
+                    <form action="{{ route('checkout.store') }}" method="POST" class="comment-form">
+                        @csrf
                         <div class="row">
                             <div class="col-lg-6">
-                                <select style="width: 100%; height: 50px; margin-bottom: 20px; padding-left: 20px; border: 1px solid #e1e1e1; color: #666666; font-size: 16px;">
+                                <select name="type_ticket_id" style="width: 100%; height: 50px; margin-bottom: 20px; padding-left: 20px; border: 1px solid #e1e1e1; color: #666666; font-size: 16px;">
                                     <option value="">-- Pilih Jenis Tiket --</option>
-                                    <option value="regular">Regular - Rp 100.000</option>
-                                    <option value="vip">VIP - Rp 250.000</option>
+                                    @foreach($typeTickets as $type)
+                                        <option value="{{ $type->id }}">{{ $type->name }} - Rp {{ number_format($type->price, 0, ',', '.') }}</option>
+                                    @endforeach
                                 </select>
                             </div>
 
                             <div class="col-lg-6">
-                                <input type="number" placeholder="Jumlah Tiket" min="1" value="1" style="width: 100%; height: 50px; margin-bottom: 20px; padding-left: 20px; border: 1px solid #e1e1e1;">
+                                <input type="number" name="qty" placeholder="Jumlah Tiket" min="1" value="1" style="width: 100%; height: 50px; margin-bottom: 20px; padding-left: 20px; border: 1px solid #e1e1e1;">
                             </div>
 
                             <div class="col-lg-12">
-                                <input type="text" placeholder="Nama Lengkap Pemesan">
+                                <input type="text" name="name" placeholder="Nama Lengkap Pemesan">
                             </div>
                             <div class="col-lg-6">
-                                <input type="email" placeholder="Alamat Email">
+                                <input type="email" name="email" placeholder="Alamat Email">
                             </div>
                             <div class="col-lg-6">
-                                <input type="text" placeholder="Nomor WhatsApp">
+                                <input type="text" name="whatsapp" placeholder="Nomor WhatsApp">
                             </div>
 
                             <div class="col-lg-12 text-center mt-3">

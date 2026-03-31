@@ -29,7 +29,7 @@ class EventController extends Controller
             'category_id' => 'required|exists:categories,id',
             'location_id' => 'required|exists:locations,id',
             'date' => 'required|date',
-            'quota' => 'required|integer|min:1',
+
             'status' => 'required|string',
             'description' => 'nullable|string',
         ]);
@@ -56,7 +56,7 @@ class EventController extends Controller
             'category_id' => 'required|exists:categories,id',
             'location_id' => 'required|exists:locations,id',
             'date' => 'required|date',
-            'quota' => 'required|integer|min:1',
+
             'status' => 'required|string',
             'description' => 'nullable|string',
         ]);
