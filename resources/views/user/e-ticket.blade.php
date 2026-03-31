@@ -27,8 +27,8 @@
                         </div>
 
                         <div class="text-center p-4" style="background: #f8f8f8; border-radius: 10px;">
-                            <img src="https://via.placeholder.com/200" alt="QR Code Placeholder" style="max-width: 200px;">
-                            <p class="mt-2" style="font-size: 12px; color: #666;">(Placeholder QR Code untuk Tugas Backend)</p>
+                            {!! QrCode::size(200)->generate('TIKET-VIP-RICHARD-2026') !!}
+                            <p class="mt-2" style="font-size: 12px; color: #666;">(QR Code Asli dari Sistem Laravel)</p>
                         </div>
 
                         <div class="text-center mt-4">
