@@ -11,6 +11,11 @@
   <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css') }}">
 </head>
 <body class="hold-transition login-page">
+@if (session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
 <div class="login-box">
   <div class="login-logo">
     <a href="/"><b>Admin</b>LTE</a>
@@ -40,7 +45,7 @@
             </div>
           </div>
         </div>
-        
+
         <div class="input-group mb-3">
           <input type="password" name="password" class="form-control" placeholder="Password" required>
           <div class="input-group-append">
@@ -49,20 +54,14 @@
             </div>
           </div>
         </div>
-        
+
         <div class="row">
           <div class="col-8">
-            <div class="icheck-primary">
-              <input type="checkbox" id="remember" name="remember">
-              <label for="remember">
-                Remember Me
-              </label>
-            </div>
           </div>
           <div class="col-4">
             <button type="submit" class="btn btn-primary btn-block">Sign In</button>
           </div>
-          </div>
+        </div>
       </form>
 
       <div class="social-auth-links text-center mb-3">

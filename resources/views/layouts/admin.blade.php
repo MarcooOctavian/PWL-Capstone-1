@@ -192,7 +192,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          
+
           <!-- Dashboard -->
           <li class="nav-item">
             <a href="{{ url('/panel') }}" class="nav-link">
@@ -232,6 +232,23 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <p>Categories</p>
             </a>
           </li>
+
+            <li class="nav-item">
+                <a href="{{ route('users.index') }}" class="nav-link">
+                    <i class="nav-icon fas fa-users"></i>
+                    <p>Users</p>
+                </a>
+            </li>
+
+            <li class="nav-item mt-auto">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="nav-link btn btn-link text-left w-100">
+                        <i class="nav-icon fas fa-sign-out-alt"></i>
+                        <p>Logout</p>
+                    </button>
+                </form>
+            </li>
 
         </ul>
       </nav>
