@@ -87,7 +87,7 @@
                                 <a href="#"><i class="fa fa-instagram"></i></a>
                             </div>
                             <div class="text-center mt-5 mb-5">
-                                <a href="#" class="primary-btn" style="font-size: 18px; padding: 15px 40px;">Pesan Tiket Sekarang</a>
+                                <a href="/checkout" class="primary-btn" style="font-size: 18px; padding: 15px 40px;">Pesan Tiket Sekarang</a>
                             </div>
                         </div>
                     </div>
