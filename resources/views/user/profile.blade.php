@@ -8,7 +8,7 @@
                     <div class="breadcrumb-text">
                         <h2>My Profile & Tickets</h2>
                         <div class="bt-option">
-                            <a href="/">Home</a>
+                            <a href="/home">Home</a>
                             <span>Profile</span>
                         </div>
                     </div>
