@@ -9,16 +9,20 @@
                         <h2>Register</h2>
                         <p>Create an account to buy your event tickets.</p>
                     </div>
-                    <form action="#" class="comment-form">
+                    <form action="{{ route('register') }}" method="POST" class="comment-form">
+                        @csrf
                         <div class="row">
                             <div class="col-lg-12 text-center">
-                                <input type="text" placeholder="Full Name" style="width: 100%; margin-bottom: 20px; padding: 15px; border: 1px solid #e1e1e1;">
+                                <input type="text" name="name" placeholder="Full Name" required style="width: 100%; margin-bottom: 20px; padding: 15px; border: 1px solid #e1e1e1;">
                             </div>
                             <div class="col-lg-12 text-center">
-                                <input type="email" placeholder="Email Address" style="width: 100%; margin-bottom: 20px; padding: 15px; border: 1px solid #e1e1e1;">
+                                <input type="email" name="email" placeholder="Email Address" required style="width: 100%; margin-bottom: 20px; padding: 15px; border: 1px solid #e1e1e1;">
                             </div>
                             <div class="col-lg-12 text-center">
-                                <input type="password" placeholder="Password" style="width: 100%; margin-bottom: 20px; padding: 15px; border: 1px solid #e1e1e1;">
+                                <input type="password" name="password" placeholder="Password" required style="width: 100%; margin-bottom: 20px; padding: 15px; border: 1px solid #e1e1e1;">
+                            </div>
+                            <div class="col-lg-12 text-center">
+                                <input type="password" name="password_confirmation" placeholder="Confirm Password" required style="width: 100%; margin-bottom: 20px; padding: 15px; border: 1px solid #e1e1e1;">
                             </div>
                             <div class="col-lg-12 text-center">
                                 <button type="submit" class="site-btn" style="width: 100%;">Register</button>

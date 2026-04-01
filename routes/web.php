@@ -29,7 +29,7 @@ Route::resource('users', UserController::class);
 
 Route::get('/home', function () {
     return view('user.index');
-})->name('user.home');
+})->middleware(['auth'])->name('user.home');
 
 Route::get('/schedule', function () {
     return view('user.schedule');
@@ -78,7 +78,7 @@ Route::get('/panel', function () {
 
     $latestTransactions = Transaction::with('user')->latest()->take(5)->get();
     $soldTickets = Ticket::with(['transaction.user', 'typeTicket.event'])->latest()->take(10)->get();
-    
+
     return view('admin.dashboard', compact('latestTransactions', 'soldTickets', 'metrics'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
