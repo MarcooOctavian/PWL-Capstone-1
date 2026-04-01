@@ -46,7 +46,7 @@ class RegisteredUserController extends Controller
         ]);
 
         event(new Registered($user));
-        
+
         return redirect('/user-login')->with('success', 'Register berhasil, silakan login');
     }
 }

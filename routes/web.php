@@ -43,12 +43,14 @@ Route::get('/event-detail', function () {
     return view('user.blog-details');
 });
 
-Route::get('/user-login', function () {
-    return view('user.login');
-});
+Route::middleware('guest')->group(function () {
+    Route::get('/user-login', function () {
+        return view('user.login');
+    });
 
-Route::get('/user-register', function () {
-    return view('user.register');
+    Route::get('/user-register', function () {
+        return view('user.register');
+    });
 });
 
 use App\Http\Controllers\TransactionController;

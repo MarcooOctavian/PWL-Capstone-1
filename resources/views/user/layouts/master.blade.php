@@ -52,7 +52,17 @@
                     <li><a href="./contact.html">Contacts</a></li>
                 </ul>
             </nav>
-            <a href="/user-login" class="primary-btn top-btn">Login / Register</a>
+            @guest
+                <a href="/user-login" class="primary-btn top-btn">Login / Register</a>
+            @endguest
+
+            @auth
+                <form method="POST" action="{{ route('logout') }}" style="display: inline-block;">
+                    @csrf
+                    <button type="submit" class="primary-btn top-btn" style="border: none; cursor: pointer;">Logout</button>
+                </form>
+            @endauth
+
             <a href="/user-profile" class="primary-btn top-btn ml-2">My Tickets</a>
         </div>
         <div id="mobile-menu-wrap"></div>
