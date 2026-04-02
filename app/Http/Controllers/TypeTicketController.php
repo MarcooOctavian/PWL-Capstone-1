@@ -12,14 +12,15 @@ class TypeTicketController extends Controller
      */
     public function index()
     {
-        $ticketTypes = TypeTicket::with('event')->get();
-        return view('admin.ticket_types.index', compact('ticketTypes'));
+        $events = \App\Models\Event::all();
+        return view('admin.ticket_types.index', compact('events'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $events = \App\Models\Event::all();
-        return view('admin.ticket_types.create', compact('events'));
+        $selectedEvent = $request->event_id;
+        return view('admin.ticket_types.create', compact('events','selectedEvent'));
     }
 
     public function store(Request $request)
@@ -33,12 +34,13 @@ class TypeTicketController extends Controller
         ]);
 
         TypeTicket::create($data);
-        return redirect()->route('ticket-types.index')->with('success', 'Ticket Type added successfully!');
+        return redirect()->route('ticket-types.manage', $request->event_id)
+            ->with('success', 'Ticket created successfully');
     }
 
     public function show(TypeTicket $typeTicket)
     {
-        // 
+        //
     }
 
     public function edit($id)
@@ -61,12 +63,23 @@ class TypeTicketController extends Controller
         $ticketType = TypeTicket::findOrFail($id);
         $ticketType->update($data);
 
-        return redirect()->route('ticket-types.index')->with('success', 'Ticket Type updated successfully!');
+        return redirect()->route('ticket-types.manage',$request->event_id)->with('success', 'Ticket Type updated successfully!');
     }
 
     public function destroy($id)
     {
         TypeTicket::findOrFail($id)->delete();
         return back()->with('success', 'Ticket Type deleted successfully!');
+    }
+
+    public function byEvent($id)
+    {
+        $event = \App\Models\Event::findOrFail($id);
+
+        $ticketTypes = TypeTicket::with('event')
+            ->where('event_id', $id)
+            ->get();
+
+        return view('admin.ticket_types.manage', compact('ticketTypes', 'event'));
     }
 }

@@ -9,16 +9,18 @@
             <div class="card-header">
                 <h3 class="card-title">Create New Ticket Type</h3>
             </div>
-            
+
             <form action="{{ route('ticket-types.store') }}" method="POST">
                 @csrf
                 <div class="card-body">
                     <div class="form-group">
                         <label>Event</label>
-                        <select name="event_id" class="form-control" required>
-                            <option value="">-- Select Event --</option>
+                        <select name="event_id" class="form-control">
                             @foreach($events as $event)
-                                <option value="{{ $event->id }}">{{ $event->title }}</option>
+                                <option value="{{ $event->id }}"
+                                    {{ isset($selectedEvent) && $selectedEvent == $event->id ? 'selected' : '' }}>
+                                    {{ $event->title }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -45,7 +47,7 @@
                 </div>
 
                 <div class="card-footer text-right">
-                    <a href="{{ route('ticket-types.index') }}" class="btn btn-secondary">Cancel</a>
+                    <a href="{{ route('ticket-types.manage',$selectedEvent) }}" class="btn btn-secondary">Cancel</a>
                     <button type="submit" class="btn btn-primary">Save Ticket Type</button>
                 </div>
             </form>

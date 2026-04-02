@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\TypeTicketController;
 
 Route::get('/', function () {
     return redirect()->route('admin.login');
@@ -42,6 +43,12 @@ Route::get('/speaker', function () {
 Route::get('/event-detail', function () {
     return view('user.blog-details');
 });
+
+Route::get('/ticket-types', [TypeTicketController::class, 'index'])
+    ->name('ticket-types.index');
+
+Route::get('/ticket-types/event/{id}', [TypeTicketController::class, 'byEvent'])
+    ->name('ticket-types.manage');
 
 Route::middleware('guest')->group(function () {
     Route::get('/user-login', function () {

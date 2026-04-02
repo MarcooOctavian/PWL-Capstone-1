@@ -9,7 +9,7 @@
             <div class="card-header">
                 <h3 class="card-title">Edit Ticket Type</h3>
             </div>
-            
+
             <form action="{{ route('ticket-types.update', $ticketType->id) }}" method="POST">
                 @csrf
                 @method('PUT')
@@ -45,7 +45,7 @@
                 </div>
 
                 <div class="card-footer text-right">
-                    <a href="{{ route('ticket-types.index') }}" class="btn btn-secondary">Cancel</a>
+                    <a href="{{ route('ticket-types.manage',$ticketType->event_id ?? 0) }}" class="btn btn-secondary">Cancel</a>
                     <button type="submit" class="btn btn-warning">Update Ticket Type</button>
                 </div>
             </form>
