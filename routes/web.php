@@ -78,6 +78,9 @@ use App\Models\Event;
 use App\Models\TypeTicket;
 
 Route::get('/panel', function () {
+    if (!auth()->check() || !in_array(auth()->user()->role, [1, 2])) {
+        redirect('/home');
+    }
     $metrics = [
         'events_count' => Event::count(),
         'types_count' => TypeTicket::count(),

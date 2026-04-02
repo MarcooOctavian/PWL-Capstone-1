@@ -11,17 +11,9 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware) {
-
-        $middleware->redirectUsersTo(function (Request $request) {
-            if (auth()->check() && auth()->user()->role == '1') {
-                return '/panel';
-            }
-
-            return '/home';
-        });
-
+    ->withMiddleware(function (Middleware $middleware):void {
+        //
     })
-    ->withExceptions(function (Exceptions $exceptions) {
+    ->withExceptions(function (Exceptions $exceptions):void {
 
     })->create();
