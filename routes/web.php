@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TypeTicketController;
+use App\Http\Controllers\WaitingListController;
 
 Route::get('/', function () {
     return redirect()->route('admin.login');
@@ -133,6 +134,14 @@ Route::middleware('auth')->group(function () {
     // Exports
     Route::get('/export/excel', [App\Http\Controllers\ExportController::class, 'exportExcel'])->name('export.excel');
     Route::get('/export/pdf', [App\Http\Controllers\ExportController::class, 'exportPdf'])->name('export.pdf');
+});
+
+// Waiting List
+Route::middleware('auth')->group(function () {
+    Route::post('/waiting-list', [WaitingListController::class, 'store'])->name('waiting-list.store');
+
+    Route::get('/admin/waiting-list', [WaitingListController::class, 'index'])->name('admin.waiting-list.index');
+    Route::patch('/admin/waiting-list/{waitingList}', [WaitingListController::class, 'update'])->name('admin.waiting-list.update');
 });
 
 Route::resource('events', App\Http\Controllers\EventController::class)->middleware(['auth']);
