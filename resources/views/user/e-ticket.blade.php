@@ -27,7 +27,7 @@
                         </div>
 
                         <div class="text-center p-4" style="background: #f8f8f8; border-radius: 10px;">
-                            {!! QrCode::size(200)->generate($ticket->qr_code) !!}
+                            {!! QrCode::size(200)->generate(url('/scan/' . $ticket->qr_code)) !!}
                             <p class="mt-2" style="font-size: 12px; color: #666;">(Kode Tiket: {{ $ticket->qr_code }})</p>
                         </div>
 
