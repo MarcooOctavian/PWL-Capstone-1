@@ -2,24 +2,29 @@
 
 namespace App\Mail;
 
+use App\Models\Ticket;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class TicketGeneratedMail extends Mailable
+// Adding implements ShouldQueue
+class TicketGeneratedMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
+
+    // Declare public variable for blade template access
+    public $ticket;
 
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct(Ticket $ticket)
     {
-        //
+        // Receive ticket data from controller
+        $this->ticket = $ticket;
     }
 
     /**
@@ -27,8 +32,9 @@ class TicketGeneratedMail extends Mailable
      */
     public function envelope(): Envelope
     {
+        // Email subject
         return new Envelope(
-            subject: 'Ticket Generated Mail',
+            subject: 'E-Ticket Anda: ' . $this->ticket->transaction->typeTicket->event->title,
         );
     }
 
@@ -38,14 +44,12 @@ class TicketGeneratedMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'emails.ticket_generated',
         );
     }
 
     /**
      * Get the attachments for the message.
-     *
-     * @return array<int, Attachment>
      */
     public function attachments(): array
     {
