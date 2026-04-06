@@ -39,7 +39,7 @@
                 <ul>
                     <li class="active"><a href="/home">Home</a></li>
                     <li><a href="./about-us.html">About</a></li>
-                    <li><a href="/speaker">Speakers</a>
+                    <li><a href="/speaker">Events</a>
                         <ul class="dropdown">
                             <li><a href="#">Jayden</a></li>
                             <li><a href="#">Sara</a></li>
