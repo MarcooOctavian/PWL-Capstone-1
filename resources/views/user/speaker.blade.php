@@ -7,10 +7,10 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="breadcrumb-text">
-                        <h2>Feature Speakers</h2>
+                        <h2>Event</h2>
                         <div class="bt-option">
                             <a href="#">Home</a>
-                            <span>Our Speakers</span>
+                            <span>Our Event</span>
                         </div>
                     </div>
                 </div>
@@ -222,29 +222,25 @@
                     <div class="cs-text">
                         <div class="ct-address">
                             <span>Address:</span>
-                            <p>01 Pascale Springs Apt. 339, NY City <br />United State</p>
+                            <p>Jl. Prof. drg. Surya Sumantri, M.P.H. No. 65, Bandung 40164, Jawa Barat<br />Indonesia</p>
                         </div>
                         <ul>
                             <li>
                                 <span>Phone:</span>
-                                (+12)-345-67-8910
+                                0812-2387-7575
                             </li>
                             <li>
                                 <span>Email:</span>
-                                info.colorlib@gmail.com
+                                2472007@maranatha.ac.id
                             </li>
                         </ul>
-                        <div class="ct-links">
-                            <span>Website:</span>
-                            <p>https://conference.colorlib.com</p>
-                        </div>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="cs-map">
-                        <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d52901.38789495531!2d-118.19465514866786!3d34.03523211493029!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2cf71ad83ff9f%3A0x518b28657f4543b7!2sEast%20Los%20Angeles%2C%20CA%2C%20USA!5e0!3m2!1sen!2sbd!4v1579763856144!5m2!1sen!2sbd"
-                            height="400" style="border:0;" allowfullscreen=""></iframe>
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1267590.53583588!2d106.85404063690386!3d-6.80279962485953!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e6398252477f%3A0x146a1f93d3e815b2!2sBandung%2C%20Kota%20Bandung%2C%20Jawa%20Barat!5e0!3m2!1sid!2sid!4v1775444764820!5m2!1sid!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                            height="400" style="border:0;" allowfullscreen="">
+                        </iframe>
                     </div>
                 </div>
             </div>
