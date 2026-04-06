@@ -116,7 +116,7 @@
                     </div>
                     <ul>
                         <li><a href="#">Home</a></li>
-                        <li><a href="#">Speakers</a></li>
+                        <li><a href="#">Events</a></li>
                         <li><a href="#">Schedule</a></li>
                         <li><a href="#">Blog</a></li>
                         <li><a href="#">Contact</a></li>
