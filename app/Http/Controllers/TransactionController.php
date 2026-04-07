@@ -15,7 +15,8 @@ class TransactionController extends Controller
     public function create()
     {
         $typeTickets = \App\Models\TypeTicket::all();
-        return view('user.checkout', compact('typeTickets'));
+        $schedules = \App\Models\Schedule::all();
+        return view('user.checkout', compact('typeTickets', 'schedules'));
     }
 
     public function store(Request $request)

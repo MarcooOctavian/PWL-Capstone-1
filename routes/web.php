@@ -71,41 +71,21 @@ use App\Http\Controllers\TicketController;
 
 Route::get('/checkout', [TransactionController::class, 'create'])->name('checkout.create');
 Route::post('/checkout', [TransactionController::class, 'store'])->name('checkout.store');
-// Rute testing UI sementara (hardcode)
-Route::get('/e-ticket/{id}', function ($id) {
-    // Membuat objek tiket palsu (dummy)
-    $ticket = new stdClass();
-    $ticket->qr_code = 'DUMMY-QR-CODE-12345';
 
-    // Mencegah error pada relasi objek di e-ticket.blade.php
-    $ticket->typeTicket = new stdClass();
-    $ticket->typeTicket->name = 'VIP';
-    $ticket->typeTicket->event = new stdClass();
-    $ticket->typeTicket->event->title = 'Maranatha Tech Conference 2026';
-    $ticket->typeTicket->event->date = '2026-05-29';
-
-    $ticket->transaction = new stdClass();
-    $ticket->transaction->user = new stdClass();
-    $ticket->transaction->user->name = 'Richard Vincentius';
-
-    return view('user.e-ticket', compact('ticket'));
-})->name('ticket.show');
-
-// Rute testing UI untuk panitia memindai QR Code
-Route::get('/scan/{qr_code}', function ($qr_code) {
-    // Membuat data dummy
-    $ticket = new stdClass();
-    $ticket->qr_code = $qr_code;
-    $ticket->transaction = new stdClass();
-    $ticket->transaction->user = new stdClass();
-    $ticket->transaction->user->name = 'Richard Vincentius';
-
-    // Memanggil file scan-result.blade.php
-    return view('user.scan-result', compact('ticket'));
-});
+Route::get('/e-ticket/{id}', [TicketController::class, 'show'])->name('ticket.show');
+Route::get('/scan/{qr_code}', [TicketController::class, 'scanTicket']);
 
 Route::get('/user-profile', function () {
-    return view('user.profile');
+    // Mengambil ID user yang login (atau default 1 untuk testing seperti di controller Anda)
+    $userId = auth()->id() ?? 1;
+
+    // Mengambil semua transaksi beserta data tiket dan event-nya, diurutkan dari yang terbaru
+    $transactions = \App\Models\Transaction::with(['tickets.typeTicket.event'])
+        ->where('user_id', $userId)
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    return view('user.profile', compact('transactions'));
 });
 
 use App\Models\Transaction;
