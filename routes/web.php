@@ -22,10 +22,15 @@ Route::post('/register', [RegisteredUserController::class, 'store']);
 Route::get('/admin/forgot-password', function () {
     return view('admin.forgot-password');
 })->name('admin.forgot-password');
+Route::post('/admin/forgot-password', [RegisteredUserController::class, 'forgotPassword'])
+    ->name('admin.forgot-password.post');
 
 Route::get('/admin/recover-password', function () {
     return view('admin.recover-password');
-})->name('admin.recover-password-password');
+})->name('admin.recover-password');
+
+Route::post('/admin/reset-password', [RegisteredUserController::class, 'resetPassword'])
+    ->name('admin.reset-password');
 
 Route::resource('users', UserController::class);
 
