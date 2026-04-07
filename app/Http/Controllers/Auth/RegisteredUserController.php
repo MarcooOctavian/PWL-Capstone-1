@@ -47,6 +47,33 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        return redirect('/user-login')->with('success', 'Register berhasil, silakan login');
+        return redirect('/login-admin')->with('success', 'Register berhasil, silakan login');
+    }
+
+    public function forgotPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email'
+        ]);
+
+        return redirect()->route('admin.recover-password', [
+            'email' => $request->email
+        ]);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+            'password' => 'required|min:6|confirmed'
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+        
+        $user->update([
+            'password' => Hash::make($request->password)
+        ]);
+        return redirect()->route('admin.login')
+            ->with('success', 'Password berhasil diubah');
     }
 }
