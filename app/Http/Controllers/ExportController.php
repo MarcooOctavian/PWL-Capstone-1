@@ -4,21 +4,28 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use App\Exports\TransactionsExport;
+use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class ExportController extends Controller
 {
+    /**
+     * Mengunduh data semua transaksi dalam format Excel.
+     */
     public function exportExcel()
     {
         return Excel::download(new TransactionsExport, 'transactions_report.xlsx');
     }
 
+    /**
+     * Mengunduh data semua transaksi dalam format PDF.
+     */
     public function exportPdf()
     {
         $transactions = Transaction::with('user')->latest()->get();
-        // Set paper to A4 portrait
-        $pdf = Pdf::loadView('admin.exports.transactions_pdf', compact('transactions'))->setPaper('a4', 'portrait');
+        $pdf = Pdf::loadView('admin.exports.transactions_pdf', compact('transactions'))
+                  ->setPaper('a4', 'portrait');
         
         return $pdf->download('transactions_report.pdf');
     }

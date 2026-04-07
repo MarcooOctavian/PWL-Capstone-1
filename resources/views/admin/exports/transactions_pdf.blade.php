@@ -1,62 +1,69 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-    <title>Transactions Report</title>
+    <meta charset="UTF-8">
+    <title>Laporan Transaksi</title>
     <style>
-        body { font-family: 'Helvetica', 'Arial', sans-serif; font-size: 12px; color: #333; }
-        .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #ccc; padding-bottom: 10px; }
-        .header h1 { margin: 0; font-size: 24px; color: #d9534f; }
-        .header p { margin: 5px 0 0 0; color: #777; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-        th { background-color: #f8f9fa; font-weight: bold; text-transform: uppercase; font-size: 10px; }
+        body { font-family: 'Helvetica', 'Arial', sans-serif; font-size: 12px; }
+        .text-center { text-align: center; }
+        .header { margin-bottom: 25px; border-bottom: 2px solid #333; padding-bottom: 10px; }
+        .header h2 { margin: 0; color: #333; }
+        .header p { margin: 5px 0 0 0; color: #666; font-size: 11px; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; }
+        th { background-color: #f4f6f9; font-weight: bold; text-transform: uppercase; font-size: 11px; }
         tr:nth-child(even) { background-color: #fdfdfd; }
-        .badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; }
-        .badge-success { background-color: #dff0d8; color: #3c763d; }
-        .badge-warning { background-color: #fcf8e3; color: #8a6d3b; }
-        .total-row { font-weight: bold; background-color: #eee; }
+        
+        .badge { padding: 4px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; color: #fff;}
+        .badge-success { background-color: #28a745; }
+        .badge-warning { background-color: #ffc107; color: #333; }
+        .badge-danger { background-color: #dc3545; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Event Management System</h1>
-        <p><strong>Official Transactions Report</strong></p>
-        <p>Generated on: {{ \Carbon\Carbon::now()->format('M d, Y h:i A') }}</p>
+
+    <div class="header text-center">
+        <h2>Laporan Transaksi E-Ticketing</h2>
+        <p>Di-generate pada: {{ \Carbon\Carbon::now()->format('d M Y, H:i') }}</p>
     </div>
 
     <table>
         <thead>
             <tr>
-                <th width="10%">ID</th>
-                <th width="30%">Buyer Name</th>
-                <th width="20%">Amount</th>
-                <th width="20%">Date</th>
-                <th width="20%">Status</th>
+                <th width="5%">No</th>
+                <th width="15%">ID Transaksi</th>
+                <th width="30%">Nama Pembeli</th>
+                <th width="20%">Total (Rp)</th>
+                <th width="15%">Status</th>
+                <th width="15%">Tanggal</th>
             </tr>
         </thead>
         <tbody>
-            @php $totalRevenue = 0; @endphp
-            @foreach($transactions as $trx)
-            @php if($trx->payment_status == 'paid') $totalRevenue += $trx->total_amount; @endphp
+            @forelse($transactions as $index => $trx)
             <tr>
+                <td>{{ $index + 1 }}</td>
                 <td>#{{ $trx->id }}</td>
                 <td>{{ $trx->user->name ?? 'Guest' }}</td>
                 <td>Rp {{ number_format($trx->total_amount, 0, ',', '.') }}</td>
-                <td>{{ \Carbon\Carbon::parse($trx->transaction_date)->format('M d, Y') }}</td>
                 <td>
-                    @if($trx->payment_status == 'paid')
+                    @if(in_array(strtolower($trx->payment_status), ['paid', 'success']))
                         <span class="badge badge-success">{{ ucfirst($trx->payment_status) }}</span>
-                    @else
+                    @elseif(in_array(strtolower($trx->payment_status), ['pending', 'unpaid']))
                         <span class="badge badge-warning">{{ ucfirst($trx->payment_status) }}</span>
+                    @else
+                        <span class="badge badge-danger">{{ ucfirst($trx->payment_status) }}</span>
                     @endif
                 </td>
+                <td>{{ $trx->created_at->format('d/m/Y') }}</td>
             </tr>
-            @endforeach
-            <tr class="total-row">
-                <td colspan="2" style="text-align: right;">Total Paid Revenue:</td>
-                <td colspan="3">Rp {{ number_format($totalRevenue, 0, ',', '.') }}</td>
+            @empty
+            <tr>
+                <td colspan="6" class="text-center">Belum ada data transaksi.</td>
             </tr>
+            @endforelse
         </tbody>
     </table>
+
 </body>
 </html>

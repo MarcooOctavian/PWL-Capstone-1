@@ -6,34 +6,36 @@ use App\Models\Transaction;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Carbon\Carbon;
 
 class TransactionsExport implements FromCollection, WithHeadings, WithMapping
 {
+    // Get all data
     public function collection()
     {
-        return Transaction::with('user')->get();
+        return Transaction::with('user')->latest()->get();
     }
 
+    // Header for excel
     public function headings(): array
     {
         return [
-            'Transaction ID',
-            'Buyer Name',
-            'Total Amount (Rp)',
+            'ID Transaksi',
+            'Nama Pembeli',
+            'Total Harga (Rp)',
             'Status',
-            'Transaction Date'
+            'Tanggal Transaksi'
         ];
     }
 
+    // Mapping
     public function map($transaction): array
     {
         return [
             $transaction->id,
-            $transaction->user->name ?? 'Guest',
+            $transaction->user->name ?? 'Guest/Unknown', 
             $transaction->total_amount,
             ucfirst($transaction->payment_status),
-            Carbon::parse($transaction->transaction_date)->format('Y-m-d')
+            $transaction->created_at->format('Y-m-d H:i:s'),
         ];
     }
 }
