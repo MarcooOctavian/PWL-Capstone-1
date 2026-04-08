@@ -10,12 +10,10 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-// Adding implements ShouldQueue
-class TicketGeneratedMail extends Mailable implements ShouldQueue
+class TicketGeneratedMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    // Declare public variable for blade template access
     public $ticket;
 
     /**
@@ -23,7 +21,6 @@ class TicketGeneratedMail extends Mailable implements ShouldQueue
      */
     public function __construct(Ticket $ticket)
     {
-        // Receive ticket data from controller
         $this->ticket = $ticket;
     }
 
@@ -32,9 +29,9 @@ class TicketGeneratedMail extends Mailable implements ShouldQueue
      */
     public function envelope(): Envelope
     {
-        // Email subject
+        // JALUR RELASI SUDAH DIPERBAIKI DI SINI
         return new Envelope(
-            subject: 'E-Ticket Anda: ' . $this->ticket->transaction->typeTicket->event->title,
+            subject: 'E-Ticket Anda: ' . ($this->ticket->typeTicket->event->title ?? 'Event Registration'),
         );
     }
 

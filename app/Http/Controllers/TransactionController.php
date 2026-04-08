@@ -24,6 +24,7 @@ class TransactionController extends Controller
         $request->validate([
             'type_ticket_id' => 'required|exists:type_tickets,id',
             'qty' => 'required|integer|min:1',
+            'email' => 'required|email',
         ]);
 
         $typeTicket = \App\Models\TypeTicket::findOrFail($request->type_ticket_id);
@@ -58,11 +59,16 @@ class TransactionController extends Controller
         }
 
         // 3. EMAIL E-TICKET
-        if ($firstTicketId && Auth::check()) {
-            $ticketData = Ticket::with(['transaction.user', 'typeTicket.event.location'])->find($firstTicketId);
+        if ($firstTicketId) {
+            $ticketData = Ticket::with(['typeTicket.event.location', 'transaction.user'])->find($firstTicketId);
 
             if ($ticketData) {
-                Mail::to(Auth::user()->email)->send(new TicketGeneratedMail($ticketData));
+                try {
+                    Mail::to($request->email)->send(new TicketGeneratedMail($ticketData));
+                } catch (\Exception $e) {
+                    // Jika gagal, error akan tercatat di storage/logs/laravel.log
+                    \Log::error("Gagal kirim email: " . $e->getMessage());
+                }
             }
         }
 
