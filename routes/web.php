@@ -96,19 +96,64 @@ use App\Models\TypeTicket;
 
 Route::get('/panel', function () {
     if (!auth()->check() || !in_array(auth()->user()->role, [1, 2])) {
-        redirect('/home');
+        return redirect('/home');
     }
+
+    $range = request('range', '7days');
+    $startDate = \Carbon\Carbon::now();
+
+    switch ($range) {
+        case 'today': $startDate = \Carbon\Carbon::today(); break;
+        case '30days': $startDate = \Carbon\Carbon::now()->subDays(30); break;
+        case '1year': $startDate = \Carbon\Carbon::now()->subYear(); break;
+        default: $startDate = \Carbon\Carbon::now()->subDays(7); break;
+    }
+
+    // 1. DATA: GRAFIK TRANSAKSI (Line Chart)
+    $dailySales = Transaction::where('payment_status', 'paid')
+        ->where('transaction_date', '>=', $startDate)
+        ->selectRaw('DATE(transaction_date) as date, SUM(total_amount) as total_revenue')
+        ->groupBy('date')->orderBy('date', 'ASC')->get();
+    $dates = $dailySales->pluck('date');
+    $revenues = $dailySales->pluck('total_revenue');
+
+    // 2. DATA: EVENT PERFORMANCE (Bar Chart - Tiket laku per event)
+    $events = Event::withCount(['tickets' => function($q) use ($startDate) {
+        $q->whereHas('transaction', function($t) use ($startDate) {
+            $t->where('payment_status', 'paid')->where('transaction_date', '>=', $startDate);
+        });
+    }])->get();
+    $eventLabels = $events->pluck('title');
+    $eventData = $events->pluck('tickets_count');
+
+    // 3. DATA: STATISTIK PENJUALAN (Doughnut Chart - Perbandingan Jenis Tiket)
+    $ticketTypes = TypeTicket::withCount(['tickets' => function($q) use ($startDate) {
+        $q->whereHas('transaction', function($t) use ($startDate) {
+            $t->where('payment_status', 'paid')->where('transaction_date', '>=', $startDate);
+        });
+    }])->get();
+    $typeLabels = $ticketTypes->pluck('name');
+    $typeData = $ticketTypes->pluck('tickets_count');
+
+    // METRICS KOTAK ATAS
     $metrics = [
         'events_count' => Event::count(),
         'types_count' => TypeTicket::count(),
-        'tickets_count' => Ticket::count(),
-        'revenue' => Transaction::sum('total_amount'),
+        'tickets_count' => Ticket::whereHas('transaction', function($q) use ($startDate) {
+            $q->where('transaction_date', '>=', $startDate)->where('payment_status', 'paid');
+        })->count(),
+        'revenue' => Transaction::where('payment_status', 'paid')
+            ->where('transaction_date', '>=', $startDate)->sum('total_amount'),
     ];
 
     $latestTransactions = Transaction::with('user')->latest()->take(5)->get();
     $soldTickets = Ticket::with(['transaction.user', 'typeTicket.event'])->latest()->take(10)->get();
 
-    return view('admin.dashboard', compact('latestTransactions', 'soldTickets', 'metrics'));
+    return view('admin.dashboard', compact(
+        'latestTransactions', 'soldTickets', 'metrics',
+        'dates', 'revenues', 'range',
+        'eventLabels', 'eventData', 'typeLabels', 'typeData' // <- Data baru untuk grafik
+    ));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {

@@ -44,4 +44,16 @@ class Event extends Model
     {
         return $this->hasMany(TypeTicket::class);
     }
+
+    /**
+     * Relasi Has Many Through ke tabel tickets
+     * Event memiliki banyak Ticket melalui TypeTicket
+     */
+    public function tickets()
+    {
+        return $this->hasManyThrough(
+            \App\Models\Ticket::class,
+            \App\Models\TypeTicket::class
+        );
+    }
 }
