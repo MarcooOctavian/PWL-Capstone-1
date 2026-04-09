@@ -9,6 +9,24 @@
                         <h2>Checkout Tiket</h2>
                         <p>Silakan lengkapi detail pesanan dan data diri Anda di bawah ini.</p>
                     </div>
+
+                    @if ($errors->any())
+                        <div style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #f5c6cb;">
+                            <strong>Transaksi Gagal!</strong>
+                            <ul style="margin-top: 10px; margin-bottom: 0;">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    @if (session('error'))
+                        <div style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #f5c6cb;">
+                            <strong>Perhatian!</strong> {{ session('error') }}
+                        </div>
+                    @endif
+
                     <form action="{{ route('checkout.store') }}" method="POST" class="comment-form">
                         @csrf
                         <div class="row" style="background: #fdfdfd; padding: 30px; border-radius: 8px; border: 1px solid #eee;">

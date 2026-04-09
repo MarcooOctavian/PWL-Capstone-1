@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
-use App\Mail\TicketGeneratedMail; // Pastikan ini di-import
+use App\Mail\TicketGeneratedMail;
 
 class TransactionController extends Controller
 {
@@ -21,13 +21,38 @@ class TransactionController extends Controller
 
     public function store(Request $request)
     {
+        // 1. Validasi Input Dasar
         $request->validate([
             'type_ticket_id' => 'required|exists:type_tickets,id',
             'qty' => 'required|integer|min:1',
             'email' => 'required|email',
+        ], [
+            'qty.min' => 'Minimal pembelian adalah 1 tiket.'
         ]);
 
         $typeTicket = \App\Models\TypeTicket::findOrFail($request->type_ticket_id);
+
+        // --- ERROR HANDLING ---
+
+        // Kondisi 1: Cek Batas Maksimal Pembelian per Transaksi (max_purchase)
+        if ($request->qty > $typeTicket->max_purchase) {
+            return back()->withInput()->withErrors([
+                'qty' => 'Mohon maaf, batas maksimal pembelian untuk tiket ' . $typeTicket->name . ' adalah ' . $typeTicket->max_purchase . ' tiket per transaksi.'
+            ]);
+        }
+
+        // Kondisi 2: Cek Sisa Stok Total di Database (stock)
+        // Jika tiket benar-benar habis (0)
+        if ($typeTicket->stock <= 0) {
+            return back()->with('error', 'Maaf, tiket jenis ini sudah habis total! Silakan mendaftar ke Waiting List untuk mendapat antrean jika ada pembeli yang batal.');
+        }
+
+        // Kondisi 3: Cek jika sisa stok lebih kecil dari yang mau dibeli
+        if ($request->qty > $typeTicket->stock) {
+            return back()->withInput()->withErrors([
+                'qty' => 'Mohon maaf, transaksi ditolak. Anda mencoba membeli ' . $request->qty . ' tiket, namun sisa stok saat ini hanya ' . $typeTicket->stock . ' tiket.'
+            ]);
+        }
 
         // Calculate total
         $total_amount = $typeTicket->price * $request->qty;
@@ -58,7 +83,10 @@ class TransactionController extends Controller
             if ($i === 0) $firstTicketId = $ticket->id;
         }
 
-        // 3. EMAIL E-TICKET
+        // 3. PENGURANGAN STOK
+        $typeTicket->decrement('stock', $request->qty);
+
+        // 4. EMAIL E-TICKET
         if ($firstTicketId) {
             $ticketData = Ticket::with(['typeTicket.event.location', 'transaction.user'])->find($firstTicketId);
 
@@ -66,13 +94,12 @@ class TransactionController extends Controller
                 try {
                     Mail::to($request->email)->send(new TicketGeneratedMail($ticketData));
                 } catch (\Exception $e) {
-                    // Jika gagal, error akan tercatat di storage/logs/laravel.log
                     \Log::error("Gagal kirim email: " . $e->getMessage());
                 }
             }
         }
 
-        // 4. Redirect to E-Ticket page
+        // 5. Redirect to E-Ticket page
         return redirect()->route('ticket.show', $firstTicketId)->with('success', 'Pembayaran Berhasil! E-Ticket telah dikirim ke email Anda.');
     }
 }

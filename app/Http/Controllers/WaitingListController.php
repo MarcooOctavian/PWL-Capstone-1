@@ -24,11 +24,11 @@ class WaitingListController extends Controller
     {
         $request->validate([
             'event_id' => 'required|exists:events,id',
-            'ticket_type_id' => 'required|exists:type_tickets,id',
+            'type_ticket_id' => 'required|exists:type_tickets,id',
         ]);
 
         $alreadyWaiting = WaitingList::where('user_id', Auth::id())
-            ->where('ticket_type_id', $request->ticket_type_id)
+            ->where('type_ticket_id', $request->type_ticket_id)
             ->whereIn('status', ['waiting', 'notified'])
             ->exists();
 
@@ -39,7 +39,7 @@ class WaitingListController extends Controller
         WaitingList::create([
             'user_id' => Auth::id(),
             'event_id' => $request->event_id,
-            'ticket_type_id' => $request->ticket_type_id,
+            'type_ticket_id' => $request->type_ticket_id,
             'status' => 'waiting',
         ]);
 
