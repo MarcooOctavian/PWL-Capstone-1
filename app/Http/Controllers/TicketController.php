@@ -31,10 +31,15 @@ class TicketController extends Controller
         //
     }
 
+    /**
+     * Show E-Ticket (menampilkan semua tiket dalam 1 kali transaksi)
+     */
     public function show($id)
     {
-        $ticket = \App\Models\Ticket::with(['transaction.user', 'typeTicket.event'])->findOrFail($id);
-        
-        return view('user.e-ticket', compact('ticket'));
+        $referenceTicket = Ticket::findOrFail($id);
+        $allTickets = Ticket::with(['transaction.user', 'typeTicket.event'])
+            ->where('transaction_id', $referenceTicket->transaction_id)
+            ->get();
+        return view('user.e-ticket', compact('allTickets'));
     }
 }

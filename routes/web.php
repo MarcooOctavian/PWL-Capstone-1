@@ -174,6 +174,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/admin/waiting-list/{waitingList}', [WaitingListController::class, 'update'])->name('admin.waiting-list.update');
 });
 
+// Rute untuk menampilkan halaman simulasi bayar
+Route::get('/checkout/payment', [\App\Http\Controllers\TransactionController::class, 'payment'])->name('checkout.payment');
+
+// Rute untuk tombol "Simulasikan Bayar Berhasil"
+Route::post('/checkout/payment/process', [\App\Http\Controllers\TransactionController::class, 'processPayment'])->name('checkout.payment.process');
+
 Route::resource('events', App\Http\Controllers\EventController::class)->middleware(['auth']);
 
 Route::resource('schedules', App\Http\Controllers\ScheduleController::class)->middleware(['auth']);

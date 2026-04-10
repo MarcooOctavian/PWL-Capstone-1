@@ -65,23 +65,37 @@
                                 <input type="number" name="qty" placeholder="Jumlah (Kuota) Tiket" min="1" value="1" required style="width: 100%; height: 50px; margin-bottom: 30px; padding-left: 20px; border: 1px solid #e1e1e1; border-radius: 4px;">
                             </div>
 
-
                             <div class="col-lg-12">
                                 <h4 style="font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #111; border-bottom: 2px solid #f1592a; padding-bottom: 8px;">2. Identitas Kontak Utama</h4>
                             </div>
 
-                            <div class="col-lg-12">
+                            <div class="col-lg-6">
                                 <input type="text" name="name" placeholder="Nama Lengkap (sesuai KTP)" required style="border-radius: 4px; margin-bottom: 20px;">
                             </div>
                             <div class="col-lg-6">
-                                <input type="email" name="email" placeholder="Alamat Email (untuk E-Ticket)" required style="border-radius: 4px; margin-bottom: 20px;">
+                                <input type="email" name="email" placeholder="Alamat Email (untuk E-Ticket)" required style="border-radius: 4px; margin-bottom: 30px;">
                             </div>
-                            <div class="col-lg-6">
-                                <input type="text" name="phone" placeholder="Nomor WhatsApp (untuk notifikasi)" required style="border-radius: 4px; margin-bottom: 30px;">
+
+                            <div class="col-lg-12">
+                                <h4 style="font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #111; border-bottom: 2px solid #f1592a; padding-bottom: 8px;">3. Metode Pembayaran</h4>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <select name="payment_method" id="payment_method" required onchange="togglePaymentInput()" style="width: 100%; height: 50px; margin-bottom: 20px; padding-left: 20px; border: 1px solid #e1e1e1; color: #666666; font-size: 16px; border-radius: 4px;">
+                                    <option value="">-- Pilih Metode Pembayaran --</option>
+                                    <option value="qris">QRIS (Scan Barcode Umum)</option>
+                                    <option value="ovo">OVO</option>
+                                    <option value="dana">DANA</option>
+                                    <option value="credit_card">Kartu Kredit / Debit</option>
+                                </select>
+                            </div>
+
+                            <div class="col-lg-12" id="dynamic_payment_input" style="display: none;">
+                                <input type="text" name="payment_credential" id="payment_credential" placeholder="" style="border-radius: 4px; margin-bottom: 20px; width: 100%;">
                             </div>
 
                             <div class="col-lg-12 text-center mt-4">
-                                <button type="submit" class="site-btn" style="width: 100%; border-radius: 4px; font-size: 18px; padding: 15px 0;">Lanjutkan Pembayaran</button>
+                                <button type="submit" class="site-btn" style="width: 100%; border-radius: 4px; font-size: 18px; padding: 15px 0;">Lanjutkan ke Verifikasi</button>
                             </div>
 
                         </div>
@@ -90,4 +104,32 @@
             </div>
         </div>
     </section>
+
+    <script>
+        function togglePaymentInput() {
+            var method = document.getElementById('payment_method').value;
+            var inputContainer = document.getElementById('dynamic_payment_input');
+            var inputField = document.getElementById('payment_credential');
+
+            if (method === 'ovo' || method === 'dana') {
+                inputContainer.style.display = 'block';
+                inputField.placeholder = "Masukkan Nomor " + method.toUpperCase() + " Anda (Contoh: 0812...)";
+                inputField.required = true;
+            }
+            else if (method === 'qris') {
+                inputContainer.style.display = 'block';
+                inputField.placeholder = "Masukkan Nomor WhatsApp (Untuk Bukti QRIS)";
+                inputField.required = true;
+            }
+            else if (method === 'credit_card') {
+                inputContainer.style.display = 'block';
+                inputField.placeholder = "Masukkan Nomor Kartu Kredit (Simulasi: 4111-2222-...)";
+                inputField.required = true;
+            }
+            else {
+                inputContainer.style.display = 'none';
+                inputField.required = false;
+            }
+        }
+    </script>
 @endsection
