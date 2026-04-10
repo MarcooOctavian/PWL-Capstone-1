@@ -23,10 +23,11 @@ class ExportController extends Controller
      */
     public function exportPdf()
     {
-        $transactions = Transaction::with('user')->latest()->get();
+        $transactions = Transaction::with(['user', 'tickets.typeTicket.event'])->latest()->get();
+
         $pdf = Pdf::loadView('admin.exports.transactions_pdf', compact('transactions'))
-                  ->setPaper('a4', 'portrait');
-        
+            ->setPaper('a4', 'landscape');
+
         return $pdf->download('transactions_report.pdf');
     }
 }
