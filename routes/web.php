@@ -6,13 +6,14 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TypeTicketController;
 use App\Http\Controllers\WaitingListController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\TicketController;
 
 Route::get('/', function () {
     return redirect()->route('admin.login');
 });
 
 Route::get('/login-admin', function () {
-    // Ini akan memanggil file resources/views/admin/login.blade.php
     return view('admin.login');
 })->name('admin.login');
 
@@ -66,20 +67,18 @@ Route::middleware('guest')->group(function () {
     });
 });
 
-use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\TicketController;
-
 Route::get('/checkout', [TransactionController::class, 'create'])->name('checkout.create');
 Route::post('/checkout', [TransactionController::class, 'store'])->name('checkout.store');
+
+Route::get('/checkout/payment', [TransactionController::class, 'payment'])->name('checkout.payment');
+Route::post('/checkout/payment/process', [TransactionController::class, 'processPayment'])->name('checkout.payment.process');
 
 Route::get('/e-ticket/{id}', [TicketController::class, 'show'])->name('ticket.show');
 Route::get('/scan/{qr_code}', [TicketController::class, 'scanTicket']);
 
 Route::get('/user-profile', function () {
-    // Mengambil ID user yang login (atau default 1 untuk testing seperti di controller Anda)
     $userId = auth()->id() ?? 1;
 
-    // Mengambil semua transaksi beserta data tiket dan event-nya, diurutkan dari yang terbaru
     $transactions = \App\Models\Transaction::with(['tickets.typeTicket.event'])
         ->where('user_id', $userId)
         ->orderBy('created_at', 'desc')
@@ -87,12 +86,6 @@ Route::get('/user-profile', function () {
 
     return view('user.profile', compact('transactions'));
 });
-
-use App\Models\Transaction;
-use App\Models\Ticket;
-
-use App\Models\Event;
-use App\Models\TypeTicket;
 
 Route::get('/panel', function () {
     if (!auth()->check() || !in_array(auth()->user()->role, [1, 2])) {
@@ -109,16 +102,14 @@ Route::get('/panel', function () {
         default: $startDate = \Carbon\Carbon::now()->subDays(7); break;
     }
 
-    // 1. DATA: GRAFIK TRANSAKSI (Line Chart)
-    $dailySales = Transaction::where('payment_status', 'paid')
+    $dailySales = \App\Models\Transaction::where('payment_status', 'paid')
         ->where('transaction_date', '>=', $startDate)
         ->selectRaw('DATE(transaction_date) as date, SUM(total_amount) as total_revenue')
         ->groupBy('date')->orderBy('date', 'ASC')->get();
     $dates = $dailySales->pluck('date');
     $revenues = $dailySales->pluck('total_revenue');
 
-    // 2. DATA: EVENT PERFORMANCE (Bar Chart - Tiket laku per event)
-    $events = Event::withCount(['tickets' => function($q) use ($startDate) {
+    $events = \App\Models\Event::withCount(['tickets' => function($q) use ($startDate) {
         $q->whereHas('transaction', function($t) use ($startDate) {
             $t->where('payment_status', 'paid')->where('transaction_date', '>=', $startDate);
         });
@@ -126,8 +117,7 @@ Route::get('/panel', function () {
     $eventLabels = $events->pluck('title');
     $eventData = $events->pluck('tickets_count');
 
-    // 3. DATA: STATISTIK PENJUALAN (Doughnut Chart - Perbandingan Jenis Tiket)
-    $ticketTypes = TypeTicket::withCount(['tickets' => function($q) use ($startDate) {
+    $ticketTypes = \App\Models\TypeTicket::withCount(['tickets' => function($q) use ($startDate) {
         $q->whereHas('transaction', function($t) use ($startDate) {
             $t->where('payment_status', 'paid')->where('transaction_date', '>=', $startDate);
         });
@@ -135,24 +125,23 @@ Route::get('/panel', function () {
     $typeLabels = $ticketTypes->pluck('name');
     $typeData = $ticketTypes->pluck('tickets_count');
 
-    // METRICS KOTAK ATAS
     $metrics = [
-        'events_count' => Event::count(),
-        'types_count' => TypeTicket::count(),
-        'tickets_count' => Ticket::whereHas('transaction', function($q) use ($startDate) {
+        'events_count' => \App\Models\Event::count(),
+        'types_count' => \App\Models\TypeTicket::count(),
+        'tickets_count' => \App\Models\Ticket::whereHas('transaction', function($q) use ($startDate) {
             $q->where('transaction_date', '>=', $startDate)->where('payment_status', 'paid');
         })->count(),
-        'revenue' => Transaction::where('payment_status', 'paid')
+        'revenue' => \App\Models\Transaction::where('payment_status', 'paid')
             ->where('transaction_date', '>=', $startDate)->sum('total_amount'),
     ];
 
-    $latestTransactions = Transaction::with('user')->latest()->take(5)->get();
-    $soldTickets = Ticket::with(['transaction.user', 'typeTicket.event'])->latest()->take(10)->get();
+    $latestTransactions = \App\Models\Transaction::with('user')->latest()->take(5)->get();
+    $soldTickets = \App\Models\Ticket::with(['transaction.user', 'typeTicket.event'])->latest()->take(10)->get();
 
     return view('admin.dashboard', compact(
         'latestTransactions', 'soldTickets', 'metrics',
         'dates', 'revenues', 'range',
-        'eventLabels', 'eventData', 'typeLabels', 'typeData' // <- Data baru untuk grafik
+        'eventLabels', 'eventData', 'typeLabels', 'typeData'
     ));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -166,26 +155,27 @@ Route::middleware('auth')->group(function () {
     Route::get('/export/pdf', [App\Http\Controllers\ExportController::class, 'exportPdf'])->name('export.pdf');
 });
 
-// Waiting List
-Route::middleware('auth')->group(function () {
-    Route::post('/waiting-list', [WaitingListController::class, 'store'])->name('waiting-list.store');
+// RUTE WAITING LIST
 
-    Route::get('/admin/waiting-list', [WaitingListController::class, 'index'])->name('admin.waiting-list.index');
-    Route::patch('/admin/waiting-list/{waitingList}', [WaitingListController::class, 'update'])->name('admin.waiting-list.update');
-});
+// 1. Rute untuk Admin melihat daftar antrean
+Route::get('/admin/waiting-list', [WaitingListController::class, 'index'])->name('admin.waiting-list.index');
 
-Route::get('/checkout/payment', [\App\Http\Controllers\TransactionController::class, 'payment'])->name('checkout.payment');
+// 2. Rute untuk Admin mengubah status antrean (INI YANG MEMPERBAIKI ERROR ANDA)
+Route::put('/admin/waiting-list/{waitingList}', [WaitingListController::class, 'update'])->name('waiting-list.update');
 
-Route::post('/checkout/payment/process', [\App\Http\Controllers\TransactionController::class, 'processPayment'])->name('checkout.payment.process');
+// 3. Rute untuk user mendaftar ke Waiting List (Dari halaman checkout)
+Route::post('/waiting-list/join', [WaitingListController::class, 'join'])->name('waiting-list.join');
+
+// 4. Rute untuk user merespon notif (Terima/Tolak kuota)
+Route::post('/waiting-list/respond/{id}', [WaitingListController::class, 'respond'])->name('waiting-list.respond');
+
+// Rute fallback untuk store lama (opsional jika masih dipakai)
+Route::post('/waiting-list', [WaitingListController::class, 'store'])->name('waiting-list.store');
 
 Route::resource('events', App\Http\Controllers\EventController::class)->middleware(['auth']);
-
 Route::resource('schedules', App\Http\Controllers\ScheduleController::class)->middleware(['auth']);
-
 Route::resource('categories', App\Http\Controllers\CategoryController::class)->middleware(['auth']);
-
 Route::resource('ticket-types', App\Http\Controllers\TypeTicketController::class)->middleware(['auth']);
-
 Route::resource('locations', App\Http\Controllers\LocationController::class)->middleware(['auth']);
 
 require __DIR__.'/auth.php';

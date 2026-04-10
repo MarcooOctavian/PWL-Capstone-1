@@ -45,7 +45,7 @@ class TransactionController extends Controller
             ]);
         }
         if ($typeTicket->stock <= 0) {
-            return back()->with('error', 'Maaf, tiket jenis ini sudah habis total! Silakan mendaftar ke Waiting List.');
+            return back()->withInput()->with('error', 'Maaf, tiket jenis ini sudah habis total! Silakan mendaftar ke Waiting List.');
         }
         if ($request->qty > $typeTicket->stock) {
             return back()->withInput()->withErrors([
@@ -119,14 +119,15 @@ class TransactionController extends Controller
         $typeTicket->decrement('stock', $checkoutData['qty']);
 
         // 4. Kirim Email
-        if ($firstTicketId) {
-            $ticketData = Ticket::with(['typeTicket.event.location', 'transaction.user'])->find($firstTicketId);
-            if ($ticketData) {
-                try {
-                    Mail::to($checkoutData['email'])->send(new TicketGeneratedMail($ticketData));
-                } catch (\Exception $e) {
-                    \Log::error("Gagal kirim email: " . $e->getMessage());
-                }
+        if ($transaction) {
+            $allTickets = Ticket::with(['typeTicket.event.location', 'transaction.user'])
+                ->where('transaction_id', $transaction->id)
+                ->get();
+
+            try {
+                Mail::to($checkoutData['email'])->send(new TicketGeneratedMail($allTickets));
+            } catch (\Exception $e) {
+                \Log::error("Gagal kirim email: " . $e->getMessage());
             }
         }
 
