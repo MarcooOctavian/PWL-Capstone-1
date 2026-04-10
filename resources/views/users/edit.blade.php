@@ -23,7 +23,15 @@
 
                         <div class="form-group">
                             <label>Email</label>
-                            <input type="email" name="email" class="form-control" value="{{ $user->email }}" required>
+                            <input type="email" name="email"
+                                   class="form-control @error('email') is-invalid @enderror"
+                                   value="{{ old('email', $user->email) }}" required>
+
+                            @error('email')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
                         </div>
 
                         <div class="form-group">

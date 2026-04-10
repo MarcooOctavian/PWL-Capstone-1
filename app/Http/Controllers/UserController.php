@@ -30,6 +30,19 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'phone' => 'nullable',
+            'password' => 'required|min:6',
+            'role' => 'required'],
+            [
+            'email.unique' => 'Email sudah digunakan, silakan pakai email lain.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'password.required' => 'Password wajib diisi.',
+            'password.min' => 'Password minimal 6 karakter.',
+        ]);
         User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -63,12 +76,26 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
+
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'phone' => 'nullable',
+            'role' => 'required',
+            'password' => 'nullable|min:6',],
+            [
+            'email.unique' => 'Email sudah digunakan, silakan pakai email lain.',
+            'password.min' => 'Password minimal 6 karakter.',
+        ]);
+
         $data = $request->only(['name','email','phone','role']);
 
-        if ($request->password) {
+        if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
         }
+
         $user->update($data);
+
         return redirect()->route('users.index')->with('success', 'User berhasil diupdate');
     }
 
