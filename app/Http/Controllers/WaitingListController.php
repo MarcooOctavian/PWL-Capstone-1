@@ -59,4 +59,39 @@ class WaitingListController extends Controller
 
         return back()->with('success', 'Status antrean berhasil diperbarui.');
     }
+
+    // FUNGSI UNTUK USER MASUK ANTREAN WAITING LIST
+    public function join(Request $request)
+    {
+        // 1. Validasi data
+        $request->validate([
+            'type_ticket_id' => 'required|exists:type_tickets,id',
+            'name' => 'required|string',
+            'email' => 'required|email'
+        ]);
+
+        $typeTicket = \App\Models\TypeTicket::findOrFail($request->type_ticket_id);
+
+        // 2. Siapkan data dasar
+        $data = [
+            'user_id' => auth()->id(),
+            'name' => $request->name,
+            'email' => $request->email,
+            'event_id' => $typeTicket->event_id ?? 2,
+            'status' => 'waiting'
+        ];
+
+        // 3. LOGIKA PINTAR
+        if (\Illuminate\Support\Facades\Schema::hasColumn('waiting_lists', 'type_ticket_id')) {
+            $data['type_ticket_id'] = $typeTicket->id;
+        } else {
+            $data['ticket_type_id'] = $typeTicket->id;
+        }
+
+        // 4. Eksekusi Simpan
+        \App\Models\WaitingList::create($data);
+
+        // 5. Kembali dengan sukses
+        return redirect()->route('checkout.create')->with('success', 'Berhasil! Anda telah dimasukkan ke dalam antrean Waiting List. Kami akan menghubungi Anda via email jika ada tiket yang tersedia.');
+    }
 }

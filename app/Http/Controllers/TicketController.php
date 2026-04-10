@@ -42,4 +42,27 @@ class TicketController extends Controller
             ->get();
         return view('user.e-ticket', compact('allTickets'));
     }
+
+    public function cancel($id)
+    {
+        $ticket = Ticket::findOrFail($id);
+        $typeTicket = $ticket->typeTicket;
+
+        // 1. Tambahkan stok kembali
+        $typeTicket->increment('stock');
+
+        // 2. Hapus tiket
+        $ticket->delete();
+
+        // 3. Notifikasi
+        $firstInLine = \App\Models\WaitingList::where('type_ticket_id', $typeTicket->id)
+            ->where('status', 'pending')
+            ->orderBy('created_at', 'asc')
+            ->first();
+
+        if ($firstInLine) {
+        }
+
+        return back()->with('success', 'Tiket berhasil dibatalkan dan stok telah dikembalikan.');
+    }
 }

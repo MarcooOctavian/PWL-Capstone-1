@@ -2,26 +2,26 @@
 
 namespace App\Mail;
 
-use App\Models\Ticket;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Collection;
 
 class TicketGeneratedMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $ticket;
+    public $tickets;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(Ticket $ticket)
+    public function __construct($tickets)
     {
-        $this->ticket = $ticket;
+        $this->tickets = $tickets;
     }
 
     /**
@@ -29,9 +29,8 @@ class TicketGeneratedMail extends Mailable
      */
     public function envelope(): Envelope
     {
-        // JALUR RELASI SUDAH DIPERBAIKI DI SINI
         return new Envelope(
-            subject: 'E-Ticket Anda: ' . ($this->ticket->typeTicket->event->title ?? 'Event Registration'),
+            subject: 'E-Ticket Pesanan Anda - ' . config('app.name'),
         );
     }
 
@@ -47,6 +46,8 @@ class TicketGeneratedMail extends Mailable
 
     /**
      * Get the attachments for the message.
+     *
+     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
      */
     public function attachments(): array
     {
