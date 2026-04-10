@@ -26,6 +26,9 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
         $request->session()->regenerate();
+        auth()->user()->update([
+            'last_login_at' => now()
+        ]);
         $role = $request->user()->role;
         if (in_array($role, [1, 2])) {
             return redirect()->route('dashboard');

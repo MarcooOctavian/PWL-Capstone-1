@@ -64,7 +64,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-
+          @if(auth()->user()->status == 1)
           <!-- Dashboard -->
           <li class="nav-item">
             <a href="{{ url('/panel') }}" class="nav-link">
@@ -126,6 +126,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <p>Users</p>
                 </a>
             </li>
+
+            @else
+                <!-- Reactivate Account -->
+                <li class="nav-item">
+                    <a href="{{ url('/reactivate') }}" class="nav-link">
+                        <i class="nav-icon fas fa-user-check"></i>
+                        <p>Reactivate Account</p>
+                    </a>
+                </li>
+            @endif
 
             <li class="nav-item mt-auto">
                 <form method="POST" action="{{ route('logout') }}">

@@ -37,6 +37,7 @@
                             <th>Email</th>
                             <th>Phone</th>
                             <th>Role</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                         </thead>
@@ -56,6 +57,21 @@
                                     @else
                                         <span class="badge badge-secondary">User</span>
                                     @endif
+                                </td>
+                                <td>
+                                    <form action="{{ route('users.updateStatus', $user->id) }}" method="POST" class="d-flex">
+                                        @csrf
+                                        @method('PATCH')
+
+                                        <select name="status" class="form-control form-control-sm mr-2">
+                                            <option value="1" {{ $user->status ? 'selected' : '' }}>Active</option>
+                                            <option value="0" {{ !$user->status ? 'selected' : '' }}>Inactive</option>
+                                        </select>
+
+                                        <button type="submit" class="btn btn-sm btn-primary">
+                                            Update
+                                        </button>
+                                    </form>
                                 </td>
                                 <td>
                                     <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-warning">

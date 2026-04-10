@@ -13,6 +13,7 @@ use App\Models\Event;
 use App\Models\TypeTicket;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TicketController;
+use App\Http\Middleware\CheckUserStatus;
 
 // DEFAULT ROUTE
 Route::get('/', function () {
@@ -22,7 +23,6 @@ Route::get('/', function () {
 
 // ADMIN LOGIN ROUTE
 Route::get('/login-admin', function () {
-    // Ini akan memanggil file resources/views/admin/login.blade.php
     return view('admin.login');
 })->name('admin.login');
 
@@ -41,10 +41,23 @@ Route::get('/admin/recover-password', function () {
 
 Route::post('/admin/reset-password', [RegisteredUserController::class, 'resetPassword'])
     ->name('admin.reset-password');
+
+//REACTIVATE ACCOUNT
+Route::get('/reactivate', function () {
+    return view('auth.reactivate');
+})->middleware('auth');
+
+Route::get('/reactivate-user', function () {
+    return view('auth.reactivate-user');
+})->middleware('auth');
+
+Route::post('/reactivate', [UserController::class, 'reactivate'])
+    ->name('reactivate.process')
+    ->middleware('auth');
 // -----------------------
 
-// ADMIN PANEL MIDDLEWARE (ROLE 1,2 BISA MASUK)
-Route::middleware([RoleMiddleware::class])->group(function () {
+// ADMIN PANEL (ROLE 1 & 2)
+Route::middleware(['auth', CheckUserStatus::class,RoleMiddleware::class])->group(function () {
     // Dashboard
     Route::get('/panel', function () {
         $range = request('range', '7days');
@@ -103,26 +116,19 @@ Route::middleware([RoleMiddleware::class])->group(function () {
             'eventLabels', 'eventData', 'typeLabels', 'typeData' // <- Data baru untuk grafik
         ));
     })->middleware(['auth', 'verified'])->name('dashboard');
-
     // USERS
     Route::resource('users', UserController::class);
-
     // EVENTS
     Route::resource('events', App\Http\Controllers\EventController::class);
-
     // SCHEDULES
     Route::resource('schedules', App\Http\Controllers\ScheduleController::class);
-
     // CATEGORIES
     Route::resource('categories', App\Http\Controllers\CategoryController::class);
-
     // LOCATIONS
     Route::resource('locations', App\Http\Controllers\LocationController::class);
-
     // TICKET TYPES
     Route::resource('ticket-types', App\Http\Controllers\TypeTicketController::class);
     Route::get('/ticket-types/event/{id}', [TypeTicketController::class, 'byEvent'])->name('ticket-types.manage');
-
     // RUTE WAITING LIST
     // 1. Rute untuk Admin melihat daftar antrean
     Route::get('/admin/waiting-list', [WaitingListController::class, 'index'])->name('admin.waiting-list.index');
@@ -132,29 +138,63 @@ Route::middleware([RoleMiddleware::class])->group(function () {
     Route::post('/waiting-list/join', [WaitingListController::class, 'join'])->name('waiting-list.join');
     // 4. Rute untuk user merespon notif (Terima/Tolak kuota)
     Route::post('/waiting-list/respond/{id}', [WaitingListController::class, 'respond'])->name('waiting-list.respond');
-
     // Rute fallback untuk store lama (opsional jika masih dipakai)
     Route::post('/waiting-list', [WaitingListController::class, 'store'])->name('waiting-list.store');
+    // RUTE UPDATE STATUS
+    Route::patch('/users/{id}/status', [UserController::class, 'updateStatus'])
+        ->name('users.updateStatus');
 });
 // -----------------------
 
 // ----- USER ROUTES -----
-Route::get('/home', function () {
-    return view('user.index');
-})->middleware(['auth'])->name('user.home');
+Route::middleware(['auth', CheckUserStatus::class])->group(function () {
+    Route::get('/home', function () {
+        return view('user.index');
+    })->name('user.home');
 
-Route::get('/schedule', function () {
-    return view('user.schedule');
+    Route::get('/schedule', function () {
+        return view('user.schedule');
+    });
+
+    Route::get('/speaker', function () {
+        return view('user.speaker');
+    });
+
+    Route::get('/event-detail', function () {
+        return view('user.blog-details');
+    });
+
+    Route::get('/user-profile', function () {
+        $transactions = \App\Models\Transaction::with(['tickets.typeTicket.event'])
+            ->where('user_id', auth()->id())
+            ->latest()
+            ->get();
+
+        return view('user.profile', compact('transactions'));
+    });
+
+    Route::get('/e-ticket/{id}', [TicketController::class, 'show'])->name('ticket.show');
 });
 
-Route::get('/speaker', function () {
-    return view('user.speaker');
+// CHECKOUT
+Route::middleware(['auth', CheckUserStatus::class])->group(function () {
+    Route::get('/checkout/payment', [TransactionController::class, 'payment'])->name('checkout.payment');
+    Route::post('/checkout/payment/process', [TransactionController::class, 'processPayment'])->name('checkout.payment.process');
 });
 
-Route::get('/event-detail', function () {
-    return view('user.blog-details');
+Route::get('/scan/{qr_code}', [TicketController::class, 'scanTicket']);
+
+Route::middleware(['auth', CheckUserStatus::class])->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Exports
+    Route::get('/export/excel', [App\Http\Controllers\ExportController::class, 'exportExcel'])->name('export.excel');
+    Route::get('/export/pdf', [App\Http\Controllers\ExportController::class, 'exportPdf'])->name('export.pdf');
 });
 
+// GUEST USER
 Route::middleware('guest')->group(function () {
     Route::get('/user-login', function () {
         return view('user.login');
@@ -163,34 +203,6 @@ Route::middleware('guest')->group(function () {
     Route::get('/user-register', function () {
         return view('user.register');
     });
-});
-
-Route::get('/checkout/payment', [TransactionController::class, 'payment'])->name('checkout.payment');
-Route::post('/checkout/payment/process', [TransactionController::class, 'processPayment'])->name('checkout.payment.process');
-
-Route::get('/e-ticket/{id}', [TicketController::class, 'show'])->name('ticket.show');
-Route::get('/scan/{qr_code}', [TicketController::class, 'scanTicket']);
-
-Route::get('/user-profile', function () {
-    // Mengambil ID user yang login (atau default 1 untuk testing seperti di controller Anda)
-    $userId = auth()->id() ?? 1;
-    // Mengambil semua transaksi beserta data tiket dan event-nya, diurutkan dari yang terbaru
-    $transactions = \App\Models\Transaction::with(['tickets.typeTicket.event'])
-        ->where('user_id', $userId)
-        ->orderBy('created_at', 'desc')
-        ->get();
-
-    return view('user.profile', compact('transactions'));
-});
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    // Exports
-    Route::get('/export/excel', [App\Http\Controllers\ExportController::class, 'exportExcel'])->name('export.excel');
-    Route::get('/export/pdf', [App\Http\Controllers\ExportController::class, 'exportPdf'])->name('export.pdf');
 });
 
 require __DIR__.'/auth.php';

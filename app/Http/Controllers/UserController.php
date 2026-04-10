@@ -107,4 +107,38 @@ class UserController extends Controller
         User::destroy($id);
         return back()->with('success', 'User berhasil dihapus');
     }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        $user->status = $request->status;
+        $user->save();
+        return back()->with('success', 'Status user berhasil diupdate');
+    }
+
+    public function reactivate(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+        $user = auth()->user();
+
+        // cek email & password
+        if ($request->email != $user->email || !Hash::check($request->password, $user->password)) {
+            return back()->withErrors([
+                'email' => 'Email atau password salah'
+            ]);
+        }
+
+        // aktifkan akun
+        $user->status = 1;
+        $user->last_login_at = now();
+        $user->save();
+
+        if (in_array($user->role, [1, 2])) {
+            return redirect('/panel')->with('success', 'Akun berhasil diaktifkan kembali');
+        }
+        return redirect('/home')->with('success', 'Akun berhasil diaktifkan kembali');
+    }
 }

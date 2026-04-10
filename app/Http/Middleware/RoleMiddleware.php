@@ -13,6 +13,7 @@ class RoleMiddleware
         if (!auth()->check()) {
             return redirect('/login-admin');
         }
+
         if (!in_array(auth()->user()->role, [1, 2])) {
             abort(403, 'Akses ditolak');
         }

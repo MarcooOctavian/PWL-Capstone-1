@@ -51,6 +51,11 @@ class User extends Authenticatable
         ];
     }
 
+    protected $casts = [
+        'status' => 'boolean',
+        'last_login_at' => 'datetime',
+    ];
+
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
