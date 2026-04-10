@@ -106,12 +106,19 @@ scratch. This page gets rid of all links and provides the needed markup only.
           </li>
 
           <!-- Ticket Types -->
-          <li class="nav-item">
-            <a href="{{ url('/ticket-types') }}" class="nav-link">
-              <i class="nav-icon fas fa-ticket-alt"></i>
-              <p>Ticket Types</p>
-            </a>
-          </li>
+            <li class="nav-item">
+                <a href="{{ url('/ticket-types') }}" class="nav-link">
+                    <i class="nav-icon fas fa-ticket-alt"></i>
+                    <p>Ticket Types</p>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="{{ route('admin.waiting-list.index') }}" class="nav-link {{ Request::is('admin/waiting-list') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-clock"></i>
+                    <p>Waiting List</p>
+                </a>
+            </li>
 
             <li class="nav-item">
                 <a href="{{ route('users.index') }}" class="nav-link">

@@ -11,8 +11,10 @@ class WaitingList extends Model
 
     protected $fillable = [
         'user_id',
+        'name',
+        'email',
         'event_id',
-        'type_ticket_id',
+        'ticket_type_id',
         'status',
     ];
 
@@ -28,6 +30,6 @@ class WaitingList extends Model
 
     public function ticketType()
     {
-        return $this->belongsTo(TypeTicket::class, 'type_ticket_id');
+        return $this->belongsTo(TypeTicket::class, 'ticket_type_id');
     }
 }
