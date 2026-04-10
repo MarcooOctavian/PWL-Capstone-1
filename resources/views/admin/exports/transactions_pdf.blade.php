@@ -25,7 +25,7 @@
 
 <div class="header text-center">
     <h2>Laporan Transaksi E-Ticketing</h2>
-    <p>Di-generate pada: {{ \Carbon\Carbon::now()->format('d M Y, H:i:s') }}</p>
+    <p>Di-generate pada: {{ \Carbon\Carbon::now()->timezone('Asia/Jakarta')->format('d M Y, H:i:s') }} WIB</p>
 </div>
 
 <table>
@@ -67,7 +67,7 @@
                     <span class="badge badge-danger">{{ ucfirst($trx->payment_status) }}</span>
                 @endif
             </td>
-            <td>{{ $trx->created_at->format('d/m/Y H:i:s') }}</td>
+            <td>{{ $trx->created_at->timezone('Asia/Jakarta')->format('d/m/Y H:i:s') }} WIB</td>
         </tr>
     @empty
         <tr>
