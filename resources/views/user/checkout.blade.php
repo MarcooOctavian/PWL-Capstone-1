@@ -28,6 +28,7 @@
                             @if(str_contains(session('error'), 'Waiting List'))
                                 <form action="{{ route('waiting-list.join') }}" method="POST" style="margin-top: 15px;">
                                     @csrf
+                                    <input type="hidden" name="event_id" value="{{ $event->id }}">
                                     <input type="hidden" name="type_ticket_id" value="{{ old('type_ticket_id') }}">
                                     <input type="hidden" name="name" value="{{ old('name') }}">
                                     <input type="hidden" name="email" value="{{ old('email') }}">

@@ -17,6 +17,10 @@ class TransactionController extends Controller
 {
     public function create(Request $request)
     {
+        if (!$request->event_id) {
+            return redirect()->route('events.public')
+                ->with('error', 'Pilih event dulu');
+        }
         $event = \App\Models\Event::findOrFail($request->event_id);
         $typeTickets = \App\Models\TypeTicket::where('event_id', $event->id)->get();
         $schedules = \App\models\Schedule::with('location')
@@ -44,15 +48,21 @@ class TransactionController extends Controller
 
         // --- ERROR HANDLING LIMIT & STOK ---
         if ($request->qty > $typeTicket->max_purchase) {
-            return back()->withInput()->withErrors([
+            return redirect()->route('checkout.create', [
+                'event_id' => $typeTicket->event_id
+            ])->withInput()->withErrors([
                 'qty' => 'Mohon maaf, batas maksimal pembelian untuk tiket ' . $typeTicket->name . ' adalah ' . $typeTicket->max_purchase . ' tiket per transaksi.'
             ]);
         }
         if ($typeTicket->stock <= 0) {
-            return back()->withInput()->with('error', 'Maaf, tiket jenis ini sudah habis total! Silakan mendaftar ke Waiting List.');
+            return redirect()->route('checkout.create', [
+                'event_id' => $typeTicket->event_id
+            ])->withInput()->with('error', 'Maaf, tiket jenis ini sudah habis total! Silakan mendaftar ke Waiting List.');
         }
         if ($request->qty > $typeTicket->stock) {
-            return back()->withInput()->withErrors([
+            return redirect()->route('checkout.create', [
+                'event_id' => $typeTicket->event_id
+            ])->withInput()->withErrors([
                 'qty' => 'Mohon maaf, transaksi ditolak. Anda mencoba membeli ' . $request->qty . ' tiket, namun sisa stok saat ini hanya ' . $typeTicket->stock . ' tiket.'
             ]);
         }

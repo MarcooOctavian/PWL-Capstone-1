@@ -133,17 +133,12 @@ Route::middleware(['auth', CheckUserStatus::class,RoleMiddleware::class])->group
     // TICKET TYPES
     Route::resource('ticket-types', App\Http\Controllers\TypeTicketController::class);
     Route::get('/ticket-types/event/{id}', [TypeTicketController::class, 'byEvent'])->name('ticket-types.manage');
+
     // RUTE WAITING LIST
     // 1. Rute untuk Admin melihat daftar antrean
     Route::get('/admin/waiting-list', [WaitingListController::class, 'index'])->name('admin.waiting-list.index');
     // 2. Rute untuk Admin mengubah status antrean
     Route::put('/admin/waiting-list/{waitingList}', [WaitingListController::class, 'update'])->name('waiting-list.update');
-    // 3. Rute untuk user mendaftar ke Waiting List (Dari halaman checkout)
-    Route::post('/waiting-list/join', [WaitingListController::class, 'join'])->name('waiting-list.join');
-    // 4. Rute untuk user merespon notif (Terima/Tolak kuota)
-    Route::post('/waiting-list/respond/{id}', [WaitingListController::class, 'respond'])->name('waiting-list.respond');
-    // Rute fallback untuk store lama (opsional jika masih dipakai)
-    Route::post('/waiting-list', [WaitingListController::class, 'store'])->name('waiting-list.store');
     // RUTE UPDATE STATUS
     Route::patch('/users/{id}/status', [UserController::class, 'updateStatus'])
         ->name('users.updateStatus');
@@ -176,6 +171,13 @@ Route::middleware(['auth', CheckUserStatus::class])->group(function () {
 
         return view('user.profile', compact('transactions'));
     });
+
+    // 3. Rute untuk user mendaftar ke Waiting List (Dari halaman checkout)
+    Route::post('/waiting-list/join', [WaitingListController::class, 'join'])->name('waiting-list.join');
+    // 4. Rute untuk user merespon notif (Terima/Tolak kuota)
+    Route::post('/waiting-list/respond/{id}', [WaitingListController::class, 'respond'])->name('waiting-list.respond');
+    // Rute fallback untuk store lama (opsional jika masih dipakai)
+    Route::post('/waiting-list', [WaitingListController::class, 'store'])->name('waiting-list.store');
 
     Route::get('/e-ticket/{id}', [TicketController::class, 'show'])->name('ticket.show');
 });
