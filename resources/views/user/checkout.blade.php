@@ -46,6 +46,7 @@
                             <i class="fas fa-check-circle"></i> {{ session('success') }}
                         </div>
                     @endif
+
                     <form action="{{ route('checkout.store') }}" method="POST" class="comment-form">
                         @csrf
                         <div class="row" style="background: #fdfdfd; padding: 30px; border-radius: 8px; border: 1px solid #eee;">
@@ -62,7 +63,7 @@
                                     style="width: 100%; height: 50px; margin-bottom: 20px; padding: 0 20px; border: 1px solid #e1e1e1; border-radius: 4px; font-size: 16px;">
                                 <option value="">-- Pilih Jadwal Event --</option>
                                 @foreach($schedules as $schedule)
-                                    <option value="{{ $schedule->id }}">
+                                    <option value="{{ $schedule->id }}" {{ old('schedule_id') == $schedule->id ? 'selected' : '' }}>
                                         {{ \Carbon\Carbon::parse($event->date)->format('d M Y') }}
                                         |
                                         {{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }} -
@@ -82,8 +83,11 @@
                                     <option
                                         value="{{ $type->id }}"
                                         data-max="{{ $type->max_purchase }}"
+                                        data-stock="{{ $type->stock }}"
+                                        {{ old('type_ticket_id') == $type->id ? 'selected' : '' }}
                                     >
                                         {{ $type->name }} - Rp {{ number_format($type->price, 0, ',', '.') }}
+                                        (Sisa: {{ $type->stock > 0 ? $type->stock : 'Habis' }})
                                     </option>
                                 @endforeach
                             </select>
@@ -136,6 +140,49 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             togglePaymentInput();
+
+            var ticketSelect = document.getElementById('ticket_select');
+            if (ticketSelect.value) {
+                ticketSelect.dispatchEvent(new Event('change'));
+            }
+        });
+
+        // LOGIKA JAVASCRIPT UNTUK MENGISI DROPDOWN QTY
+        document.getElementById('ticket_select').addEventListener('change', function() {
+            var selectedOption = this.options[this.selectedIndex];
+            var qtySelect = document.getElementById('qty_select');
+
+            // Kosongkan qty select sebelumnya
+            qtySelect.innerHTML = '<option value="">-- Pilih Jumlah Tiket --</option>';
+
+            if (!selectedOption.value) return;
+
+            var maxPurchase = parseInt(selectedOption.getAttribute('data-max'));
+            var stock = parseInt(selectedOption.getAttribute('data-stock'));
+
+            if (stock <= 0) {
+                // Jika habis, munculkan angka 1 untuk bypass ke form error
+                var opt = document.createElement('option');
+                opt.value = 1;
+                opt.text = "1 (Daftar Waiting List)";
+                qtySelect.appendChild(opt);
+                qtySelect.value = 1; // Auto select
+            } else {
+                // Jika ada stok, hitung batas maksimal yang bisa dibeli
+                var limit = Math.min(maxPurchase, stock);
+                for (var i = 1; i <= limit; i++) {
+                    var opt = document.createElement('option');
+                    opt.value = i;
+                    opt.text = i;
+                    qtySelect.appendChild(opt);
+                }
+            }
+
+            // Mengembalikan old value jika form gagal dan reload
+            var oldQty = "{{ old('qty') }}";
+            if (oldQty && oldQty <= (stock <= 0 ? 1 : Math.min(maxPurchase, stock))) {
+                qtySelect.value = oldQty;
+            }
         });
 
         function togglePaymentInput() {

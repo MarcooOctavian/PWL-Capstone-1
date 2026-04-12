@@ -4,12 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\TypeTicket;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class TypeTicketController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $events = \App\Models\Event::all();
@@ -61,7 +59,29 @@ class TypeTicketController extends Controller
         ]);
 
         $ticketType = TypeTicket::findOrFail($id);
+        $oldStock = $ticketType->stock;
+
         $ticketType->update($data);
+
+        // OTOMATIS: Cek jika admin baru saja menambah stok
+        if ($oldStock <= 0 && $ticketType->stock > 0) {
+
+            $columnName = Schema::hasColumn('waiting_lists', 'type_ticket_id') ? 'type_ticket_id' : 'ticket_type_id';
+
+            $pengantre = \App\Models\WaitingList::where($columnName, $ticketType->id)
+                ->where('status', 'waiting')
+                ->orderBy('created_at', 'asc')
+                ->take($ticketType->stock)
+                ->get();
+
+            foreach ($pengantre as $orang) {
+                // 1. Ubah statusnya agar muncul di Profil User
+                $orang->update(['status' => 'notified']);
+
+                // 2. 'Booking' stok tersebut agar tidak dibeli orang umum
+                $ticketType->decrement('stock', 1);
+            }
+        }
 
         return redirect()->route('ticket-types.manage',$request->event_id)->with('success', 'Ticket Type updated successfully!');
     }

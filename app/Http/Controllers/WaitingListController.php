@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\WaitingList;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
 
 class WaitingListController extends Controller
 {
@@ -27,8 +28,10 @@ class WaitingListController extends Controller
             'type_ticket_id' => 'required|exists:type_tickets,id',
         ]);
 
+        $columnName = Schema::hasColumn('waiting_lists', 'type_ticket_id') ? 'type_ticket_id' : 'ticket_type_id';
+
         $alreadyWaiting = WaitingList::where('user_id', Auth::id())
-            ->where('type_ticket_id', $request->type_ticket_id)
+            ->where($columnName, $request->type_ticket_id)
             ->whereIn('status', ['waiting', 'notified'])
             ->exists();
 
@@ -39,7 +42,7 @@ class WaitingListController extends Controller
         WaitingList::create([
             'user_id' => Auth::id(),
             'event_id' => $request->event_id,
-            'type_ticket_id' => $request->type_ticket_id,
+            $columnName => $request->type_ticket_id,
             'status' => 'waiting',
         ]);
 
@@ -82,7 +85,7 @@ class WaitingListController extends Controller
         ];
 
         // 3. LOGIKA PINTAR
-        if (\Illuminate\Support\Facades\Schema::hasColumn('waiting_lists', 'type_ticket_id')) {
+        if (Schema::hasColumn('waiting_lists', 'type_ticket_id')) {
             $data['type_ticket_id'] = $typeTicket->id;
         } else {
             $data['ticket_type_id'] = $typeTicket->id;
@@ -93,5 +96,54 @@ class WaitingListController extends Controller
 
         // 5. Kembali dengan sukses
         return redirect()->route('checkout.create')->with('success', 'Berhasil! Anda telah dimasukkan ke dalam antrean Waiting List. Kami akan menghubungi Anda via email jika ada tiket yang tersedia.');
+    }
+
+    // FUNGSI: UNTUK USER MERESPON TAWARAN TIKET (ACCEPT/DECLINE)
+    public function respond(Request $request, $id)
+    {
+        $waitingList = WaitingList::findOrFail($id);
+
+        $columnName = Schema::hasColumn('waiting_lists', 'type_ticket_id') ? 'type_ticket_id' : 'ticket_type_id';
+        $ticketId = $waitingList->$columnName;
+
+        $typeTicket = \App\Models\TypeTicket::findOrFail($ticketId);
+
+        // JIKA USER KLIK ACCEPT (AMBIL TIKET)
+        if ($request->action == 'accept') {
+            $waitingList->update(['status' => 'purchased']);
+
+            // Mengembalikan 1 stok yang tadi di-booking, lalu lempar ke form checkout
+            $typeTicket->increment('stock', 1);
+
+            // Beri token khusus (session) agar tidak kena validasi stok habis
+            session()->put('bypass_stock_for_wl', true);
+
+            return redirect()->route('checkout.create', ['event_id' => $waitingList->event_id])
+                ->with('success', 'Kuota berhasil diamankan! Silakan isi data diri dan selesaikan pembayaran untuk tiket ' . $typeTicket->name . '.');
+        }
+
+        // JIKA USER KLIK DECLINE (TOLAK TIKET)
+        if ($request->action == 'decline') {
+            // 1. Ubah status menjadi dibatalkan
+            $waitingList->update(['status' => 'canceled']);
+
+            // 2. Kembalikan 1 stok yang tadi di-booking
+            $typeTicket->increment('stock', 1);
+
+            // 3. OTOMATIS MENCARI PENGGANTI (Auto Oper ke orang berikutnya)
+            $nextInLine = WaitingList::where($columnName, $typeTicket->id)
+                ->where('status', 'waiting')
+                ->orderBy('created_at', 'asc')
+                ->first();
+
+            if ($nextInLine) {
+                // Beri notif ke orang selanjutnya, lalu booking lagi stoknya
+                $nextInLine->update(['status' => 'notified']);
+                $typeTicket->decrement('stock', 1);
+            }
+
+            return back()->with('success', 'Anda telah menolak tiket. Kesempatan otomatis diberikan ke antrean berikutnya.');
+        }
+        return back()->with('error', 'Aksi tidak valid atau tidak dikenali.');
     }
 }
