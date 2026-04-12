@@ -14,11 +14,13 @@ use App\Models\TypeTicket;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TicketController;
 use App\Http\Middleware\CheckUserStatus;
+use App\Http\Controllers\EventController;
 
 // DEFAULT ROUTE
 Route::get('/', function () {
-    return redirect()->route('admin.login');
-});
+    $events = Event::latest()->get();
+    return view('user.index', compact('events'));
+})->name('home');
 // -----------------------
 
 // ADMIN LOGIN ROUTE
@@ -119,7 +121,9 @@ Route::middleware(['auth', CheckUserStatus::class,RoleMiddleware::class])->group
     // USERS
     Route::resource('users', UserController::class);
     // EVENTS
-    Route::resource('events', App\Http\Controllers\EventController::class);
+    Route::prefix('admin')->name('admin.')->group(function () {
+        Route::resource('events', EventController::class);
+    });
     // SCHEDULES
     Route::resource('schedules', App\Http\Controllers\ScheduleController::class);
     // CATEGORIES
@@ -149,8 +153,8 @@ Route::middleware(['auth', CheckUserStatus::class,RoleMiddleware::class])->group
 // ----- USER ROUTES -----
 Route::middleware(['auth', CheckUserStatus::class])->group(function () {
     Route::get('/home', function () {
-        return view('user.index');
-    })->name('user.home');
+        return redirect()->route('home');
+    });
 
     Route::get('/schedule', function () {
         return view('user.schedule');
@@ -178,8 +182,11 @@ Route::middleware(['auth', CheckUserStatus::class])->group(function () {
 
 // CHECKOUT
 Route::middleware(['auth', CheckUserStatus::class])->group(function () {
+    Route::get('/checkout', [TransactionController::class, 'create'])->name('checkout.create');
+    Route::post('/checkout', [TransactionController::class, 'store'])->name('checkout.store');
     Route::get('/checkout/payment', [TransactionController::class, 'payment'])->name('checkout.payment');
     Route::post('/checkout/payment/process', [TransactionController::class, 'processPayment'])->name('checkout.payment.process');
+
 });
 
 Route::get('/scan/{qr_code}', [TicketController::class, 'scanTicket']);
@@ -205,4 +212,12 @@ Route::middleware('guest')->group(function () {
     });
 });
 
+// PUBLIC
+Route::get('/events', [EventController::class, 'publicIndex'])->name('events.public');
+Route::get('/events/{id}', [EventController::class, 'show'])->name('events.show.public');
+
 require __DIR__.'/auth.php';
+
+Route::get('/login', function () {
+    return view('admin.login');
+})->name('login');

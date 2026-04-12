@@ -9,7 +9,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Event Details</h3>
                 </div>
-                <form action="{{ route('events.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('admin.events.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="card-body">
                         <div class="form-group row">
@@ -76,7 +76,7 @@
                         </div>
                     </div>
                     <div class="card-footer text-right">
-                        <a href="{{ route('events.index') }}" class="btn btn-default mr-2">Cancel</a>
+                        <a href="{{ route('admin.events.index') }}" class="btn btn-default mr-2">Cancel</a>
                         <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Save Event</button>
                     </div>
                 </form>

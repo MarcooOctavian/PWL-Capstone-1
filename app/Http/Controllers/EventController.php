@@ -44,7 +44,7 @@ class EventController extends Controller
         }
 
         Event::create($data);
-        return redirect()->route('events.index')->with('success', 'Event created successfully.');
+        return redirect()->route('admin.events.index')->with('success', 'Event created successfully.');
     }
 
     public function edit(Event $event)
@@ -79,7 +79,7 @@ class EventController extends Controller
 
         $event->update($data);
 
-        return redirect()->route('events.index')->with('success', 'Event updated successfully.');
+        return redirect()->route('admin.events.index')->with('success', 'Event updated successfully.');
     }
 
     public function destroy(Event $event)
@@ -89,6 +89,12 @@ class EventController extends Controller
         }
 
         $event->delete();
-        return redirect()->route('events.index')->with('success', 'Event deleted successfully.');
+        return redirect()->route('admin.events.index')->with('success', 'Event deleted successfully.');
+    }
+
+    public function publicIndex()
+    {
+        $events = Event::latest()->get();
+        return view('user.events', compact('events'));
     }
 }

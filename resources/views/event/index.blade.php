@@ -9,7 +9,7 @@
       <div class="card-header">
         <h3 class="card-title">Event Listings</h3>
         <div class="card-tools">
-          <a href="{{ route('events.create') }}" class="btn btn-sm btn-success">
+          <a href="{{ route('admin.events.create') }}" class="btn btn-sm btn-success">
             <i class="fas fa-plus"></i> Add New Event
           </a>
         </div>
@@ -47,8 +47,8 @@
               </td>
 
               <td>
-                <a href="{{ route('events.edit', $event->id) }}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i> Edit</a>
-                <form action="{{ route('events.destroy', $event->id) }}" method="POST" class="d-inline delete-form">
+                <a href="{{ route('admin.events.edit', $event->id) }}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i> Edit</a>
+                <form action="{{ route('admin.events.destroy', $event->id) }}" method="POST" class="d-inline delete-form">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i> Delete</button>

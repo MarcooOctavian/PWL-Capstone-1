@@ -75,7 +75,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
           <!-- Events -->
           <li class="nav-item">
-            <a href="{{ url('/events') }}" class="nav-link">
+              <a href="{{ route('admin.events.index') }}" class="nav-link">
               <i class="nav-icon fas fa-calendar-alt"></i>
               <p>Events</p>
             </a>

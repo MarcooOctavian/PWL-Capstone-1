@@ -9,7 +9,7 @@
       <div class="card-header">
         <h3 class="card-title">Edit Event: {{ $event->title }}</h3>
       </div>
-      <form action="{{ route('events.update', $event->id) }}" method="POST">
+      <form action="{{ route('admin.events.update', $event->id) }}" method="POST">
         @csrf
         @method('PUT')
         <div class="card-body">
@@ -25,7 +25,7 @@
                 @error('date')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
           </div>
-          
+
           <div class="form-group row">
             <div class="col-sm-6">
                 <label>Category</label>
@@ -66,7 +66,7 @@
           </div>
         </div>
         <div class="card-footer text-right">
-          <a href="{{ route('events.index') }}" class="btn btn-default mr-2">Cancel</a>
+          <a href="{{ route('admin.events.index') }}" class="btn btn-default mr-2">Cancel</a>
           <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Update Event</button>
         </div>
       </form>

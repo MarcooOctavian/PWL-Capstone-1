@@ -53,35 +53,44 @@
                                 <h4 style="font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #111; border-bottom: 2px solid #f1592a; padding-bottom: 8px;">1. Pilihan Tiket</h4>
                             </div>
 
-                            <div class="col-lg-12">
-                                <select name="schedule_id" required style="width: 100%; height: 50px; margin-bottom: 20px; padding-left: 20px; border: 1px solid #e1e1e1; color: #666666; font-size: 16px; border-radius: 4px;">
-                                    <option value="">-- Pilih Jadwal Event --</option>
-                                    @if(isset($schedules))
-                                        @foreach($schedules as $schedule)
-                                            <option value="{{ $schedule->id }}" {{ old('schedule_id') == $schedule->id ? 'selected' : '' }}>
-                                                {{ \Carbon\Carbon::parse($schedule->date)->format('d F Y') }} - {{ $schedule->location_name ?? 'Lokasi Event' }}
-                                            </option>
-                                        @endforeach
-                                    @endif
-                                </select>
-                            </div>
+                            <input type="text" value="{{ $event->title }}" readonly
+                                   style="width: 100%; height: 50px; margin-bottom: 20px; padding: 0 20px; background: #f5f5f5; border: 1px solid #e1e1e1; border-radius: 4px; font-size: 16px;">
+                            <input type="hidden" name="event_id" value="{{ $event->id }}">
 
-                            <div class="col-lg-12">
-                                <select name="type_ticket_id" required style="width: 100%; height: 50px; margin-bottom: 20px; padding-left: 20px; border: 1px solid #e1e1e1; color: #666666; font-size: 16px; border-radius: 4px;">
-                                    <option value="">-- Pilih Jenis Tiket --</option>
-                                    @if(isset($typeTickets))
-                                        @foreach($typeTickets as $type)
-                                            <option value="{{ $type->id }}" {{ old('type_ticket_id') == $type->id ? 'selected' : '' }}>
-                                                {{ $type->name }} - Rp {{ number_format($type->price, 0, ',', '.') }}
-                                            </option>
-                                        @endforeach
-                                    @endif
-                                </select>
-                            </div>
+                            <select name="schedule_id" required
+                                    style="width: 100%; height: 50px; margin-bottom: 20px; padding: 0 20px; border: 1px solid #e1e1e1; border-radius: 4px; font-size: 16px;">
+                                <option value="">-- Pilih Jadwal Event --</option>
+                                @foreach($schedules as $schedule)
+                                    <option value="{{ $schedule->id }}">
+                                        {{ \Carbon\Carbon::parse($event->date)->format('d M Y') }}
+                                        |
+                                        {{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }} -
+                                        {{ \Carbon\Carbon::parse($schedule->end_time)->format('H:i') }}
+                                        |
+                                        {{ $schedule->location->venue_name ?? 'Lokasi tidak tersedia' }}
+                                        ({{ $schedule->location->city ?? '-' }})
+                                    </option>
+                                @endforeach
+                            </select>
 
-                            <div class="col-lg-12">
-                                <input type="number" name="qty" placeholder="Jumlah (Kuota) Tiket" min="1" value="{{ old('qty', 1) }}" required style="width: 100%; height: 50px; margin-bottom: 30px; padding-left: 20px; border: 1px solid #e1e1e1; border-radius: 4px;">
-                            </div>
+                            <select name="type_ticket_id" id="ticket_select" required
+                                    style="width: 100%; height: 50px; margin-bottom: 20px; padding-left: 20px; border: 1px solid #e1e1e1; border-radius: 4px;">
+
+                                <option value="">-- Pilih Jenis Tiket --</option>
+                                @foreach($typeTickets as $type)
+                                    <option
+                                        value="{{ $type->id }}"
+                                        data-max="{{ $type->max_purchase }}"
+                                    >
+                                        {{ $type->name }} - Rp {{ number_format($type->price, 0, ',', '.') }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            <select name="qty" id="qty_select" required
+                                    style="width: 100%; height: 50px; margin-bottom: 30px; padding-left: 20px; border: 1px solid #e1e1e1; border-radius: 4px;">
+                                <option value="">-- Pilih Jumlah Tiket --</option>
+                            </select>
 
                             <div class="col-lg-12">
                                 <h4 style="font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #111; border-bottom: 2px solid #f1592a; padding-bottom: 8px;">2. Identitas Kontak Utama</h4>

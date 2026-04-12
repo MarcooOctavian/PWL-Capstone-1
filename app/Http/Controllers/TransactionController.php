@@ -12,13 +12,17 @@ use App\Mail\TicketGeneratedMail;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\TransactionsExport;
 
+
 class TransactionController extends Controller
 {
-    public function create()
+    public function create(Request $request)
     {
-        $typeTickets = \App\Models\TypeTicket::all();
-        $schedules = \App\Models\Schedule::all();
-        return view('user.checkout', compact('typeTickets', 'schedules'));
+        $event = \App\Models\Event::findOrFail($request->event_id);
+        $typeTickets = \App\Models\TypeTicket::where('event_id', $event->id)->get();
+        $schedules = \App\models\Schedule::with('location')
+            ->where('event_id', $event->id)
+            ->get();
+        return view('user.checkout', compact('event', 'typeTickets', 'schedules'));
     }
 
     // FUNGSI STORE

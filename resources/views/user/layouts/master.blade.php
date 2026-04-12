@@ -24,7 +24,7 @@
     <link rel="stylesheet" href="{{ asset('user/css/slicknav.min.css') }}" type="text/css">
     <link rel="stylesheet" href="{{ asset('user/css/style.css') }}" type="text/css">
 </head>
-
+@vite(['resources/js/app.js'])
 <body>
 <!-- Header Section Begin -->
 <header class="header-section">
@@ -37,23 +37,16 @@
         <div class="nav-menu">
             <nav class="mainmenu mobile-menu">
                 <ul>
-                    <li class="active"><a href="/home">Home</a></li>
+                    <li class="active"><a href="/">Home</a></li>
                     <li><a href="./about-us.html">About</a></li>
-                    <li><a href="/speaker">Events</a>
-                        <ul class="dropdown">
-                            <li><a href="#">Jayden</a></li>
-                            <li><a href="#">Sara</a></li>
-                            <li><a href="#">Emma</a></li>
-                            <li><a href="#">Harriet</a></li>
-                        </ul>
-                    </li>
+                    <li><a href="{{ route('events.public') }}">Events</a></li>
                     <li><a href="/schedule">Schedule</a></li>
                     <li><a href="./blog.html">Blog</a></li>
                     <li><a href="./contact.html">Contacts</a></li>
                 </ul>
             </nav>
             @guest
-                <a href="/user-login" class="primary-btn top-btn">Login / Register</a>
+                <a href="{{ route('login') }}" class="primary-btn top-btn">Login / Register</a>
             @endguest
 
             @auth
@@ -63,7 +56,9 @@
                 </form>
             @endauth
 
-            <a href="/user-profile" class="primary-btn top-btn ml-2">My Tickets</a>
+            @auth
+                <a href="/user-profile" class="primary-btn top-btn ml-2">My Tickets</a>
+            @endauth
         </div>
         <div id="mobile-menu-wrap"></div>
     </div>

@@ -30,10 +30,10 @@ class AuthenticatedSessionController extends Controller
             'last_login_at' => now()
         ]);
         $role = $request->user()->role;
-        if (in_array($role, [1, 2])) {
-            return redirect()->route('dashboard');
+        if ($role == 1 || $role == 2) {
+            return redirect('/panel');
         }
-        return redirect()->route('user.home');
+        return redirect('/');
     }
 
     /**
@@ -41,14 +41,9 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        $role = $request->user() ? $request->user()->role : null;
         Auth::guard('web')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
-        if (in_array($role, [1, 2])) {
-            return redirect()->route('admin.login');
-        }
-        return redirect('/user-login');
+        return redirect('/');
     }
 }

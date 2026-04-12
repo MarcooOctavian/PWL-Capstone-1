@@ -41,7 +41,7 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => '2',
+            'role' => '3',
             'phone' => $request->phone,
         ]);
 
@@ -69,7 +69,7 @@ class RegisteredUserController extends Controller
         ]);
 
         $user = User::where('email', $request->email)->first();
-        
+
         $user->update([
             'password' => Hash::make($request->password)
         ]);
