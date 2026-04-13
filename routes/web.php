@@ -151,18 +151,6 @@ Route::middleware(['auth', CheckUserStatus::class])->group(function () {
         return redirect()->route('home');
     });
 
-    Route::get('/schedule', function () {
-        return view('user.schedule');
-    });
-
-    Route::get('/speaker', function () {
-        return view('user.speaker');
-    });
-
-    Route::get('/event-detail', function () {
-        return view('user.blog-details');
-    });
-
     Route::get('/user-profile', function () {
         $transactions = \App\Models\Transaction::with(['tickets.typeTicket.event'])
             ->where('user_id', auth()->id())
