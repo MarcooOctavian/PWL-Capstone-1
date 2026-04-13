@@ -19,10 +19,12 @@
                         <a href="{{ route('ticket-types.index') }}" class="btn btn-sm btn-secondary">
                             Back
                         </a>
+                        @if(Auth::check() && Auth::user()->role != 3)
                         <a href="{{ route('ticket-types.create') }}?event_id={{ $event->id }}"
                            class="btn btn-sm btn-primary">
                             <i class="fas fa-plus"></i> Add Ticket Type
                         </a>
+                        @endif
                     </div>
                 </div>
 
@@ -30,25 +32,28 @@
                     <table class="table table-hover text-nowrap">
                         <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>No</th>
                             <th>Event</th>
                             <th>Name</th>
                             <th>Price</th>
                             <th>Stock</th>
                             <th>Max Purchase</th>
+                            @if(Auth::check() && Auth::user()->role != 3)
                             <th>Actions</th>
+                            @endif
                         </tr>
                         </thead>
 
                         <tbody>
                         @foreach($ticketTypes as $tt)
                             <tr>
-                                <td>{{ $tt->id }}</td>
+                                <td>{{ $loop->iteration }}</td>
                                 <td>{{ $tt->event->title ?? 'N/A' }}</td>
                                 <td>{{ $tt->name }}</td>
                                 <td>Rp {{ number_format($tt->price, 0, ',', '.') }}</td>
                                 <td>{{ $tt->stock }}</td>
                                 <td>{{ $tt->max_purchase }}</td>
+                                @if(Auth::check() && Auth::user()->role != 3)
                                 <td>
                                     <a href="{{ route('ticket-types.edit', $tt->id) }}" class="btn btn-sm btn-warning">
                                         <i class="fas fa-edit"></i> Edit
@@ -62,6 +67,7 @@
                                         </button>
                                     </form>
                                 </td>
+                                @endif
                             </tr>
                         @endforeach
 

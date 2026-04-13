@@ -65,6 +65,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           @if(auth()->user()->status == 1)
+            @if(Auth::user()->role != 3)
+
           <!-- Dashboard -->
           <li class="nav-item">
             <a href="{{ url('/panel') }}" class="nav-link">
@@ -126,6 +128,34 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <p>Users</p>
                 </a>
             </li>
+
+            @else
+
+            <!-- Home -->
+            <li class="nav-item">
+                <a href="{{ url('/') }}" class="nav-link">
+                    <i class="nav-icon fas fa-home"></i>
+                    <p>Home</p>
+                </a>
+            </li>
+
+            <!-- My Tickets -->
+            <li class="nav-item">
+                <a href="{{ url('/user-profile') }}" class="nav-link">
+                    <i class="nav-icon fas fa-ticket-alt"></i>
+                    <p>My Tickets</p>
+                </a>
+            </li>
+
+            <!-- Browse Events -->
+            <li class="nav-item">
+                <a href="{{ route('events.public') }}" class="nav-link">
+                    <i class="nav-icon fas fa-calendar-alt"></i>
+                    <p>Browse Events</p>
+                </a>
+            </li>
+
+            @endif {{-- End role check --}}
 
             @else
                 <!-- Reactivate Account -->

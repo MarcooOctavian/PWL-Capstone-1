@@ -18,7 +18,7 @@
         <table class="table table-hover text-nowrap">
           <thead>
             <tr>
-              <th>ID</th>
+              <th>No</th>
               <th>Category Name</th>
               <th>Description</th>
               <th>Actions</th>
@@ -27,7 +27,7 @@
           <tbody>
             @foreach($categories as $category)
             <tr>
-              <td>{{ $category->id }}</td>
+              <td>{{ $loop->iteration }}</td>
               <td>{{ $category->name }}</td>
               <td>{{ $category->description ?? '-' }}</td>
               <td>

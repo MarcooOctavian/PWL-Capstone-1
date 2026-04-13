@@ -22,7 +22,7 @@
                     <table class="table table-hover text-nowrap">
                         <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>No</th>
                             <th>Event</th>
                             <th>Date</th>
                             <th>Status</th>
@@ -33,7 +33,7 @@
                         <tbody>
                         @foreach($events as $event)
                             <tr>
-                                <td>{{ $event->id }}</td>
+                                <td>{{ $loop->iteration }}</td>
                                 <td>{{ $event->title }}</td>
                                 <td>{{ $event->date }}</td>
                                 <td>{{ $event->status }}</td>

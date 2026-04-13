@@ -8,30 +8,33 @@
     <div class="card card-success card-outline">
       <div class="card-header">
         <h3 class="card-title">Event Listings</h3>
+        @if(Auth::check() && Auth::user()->role != 3)
         <div class="card-tools">
           <a href="{{ route('admin.events.create') }}" class="btn btn-sm btn-success">
             <i class="fas fa-plus"></i> Add New Event
           </a>
         </div>
+        @endif
       </div>
       <div class="card-body table-responsive p-0">
         <table class="table table-hover text-nowrap">
           <thead>
             <tr>
-              <th>ID</th>
+              <th>No</th>
               <th>Event Title</th>
               <th>Category</th>
               <th>Location</th>
               <th>Date</th>
               <th>Status</th>
-
+              @if(Auth::check() && Auth::user()->role != 3)
               <th>Actions</th>
+              @endif
             </tr>
           </thead>
           <tbody>
             @foreach($events as $event)
             <tr>
-              <td>{{ $event->id }}</td>
+              <td>{{ $loop->iteration }}</td>
               <td>{{ $event->title }}</td>
               <td>{{ $event->category->name ?? 'N/A' }}</td>
               <td>{{ $event->location->venue_name ?? 'N/A' }}</td>
@@ -45,7 +48,7 @@
                     <span class="badge badge-success">{{ ucfirst($event->status) }}</span>
                 @endif
               </td>
-
+              @if(Auth::check() && Auth::user()->role != 3)
               <td>
                 <a href="{{ route('admin.events.edit', $event->id) }}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i> Edit</a>
                 <form action="{{ route('admin.events.destroy', $event->id) }}" method="POST" class="d-inline delete-form">
@@ -54,6 +57,7 @@
                     <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i> Delete</button>
                 </form>
               </td>
+              @endif
             </tr>
             @endforeach
             @if($events->isEmpty())

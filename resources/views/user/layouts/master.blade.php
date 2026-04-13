@@ -59,6 +59,10 @@
             @auth
                 <a href="/user-profile" class="primary-btn top-btn ml-2">My Tickets</a>
             @endauth
+
+            @if(Auth::check() && Auth::user()->role != 3)
+                <a href="{{ url('/panel') }}" class="primary-btn top-btn ml-2" style="background: #28a745;">Control Panel</a>
+            @endif
         </div>
         <div id="mobile-menu-wrap"></div>
     </div>

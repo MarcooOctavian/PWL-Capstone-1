@@ -18,7 +18,7 @@
         <table class="table table-hover text-nowrap">
           <thead>
             <tr>
-              <th>ID</th>
+              <th>No</th>
               <th>Venue Name</th>
               <th>Address</th>
               <th>City</th>
@@ -28,7 +28,7 @@
           <tbody>
             @foreach($locations as $location)
             <tr>
-              <td>{{ $location->id }}</td>
+              <td>{{ $loop->iteration }}</td>
               <td>{{ $location->venue_name }}</td>
               <td>{{ Str::limit($location->address, 30) }}</td>
               <td>{{ $location->city }}</td>

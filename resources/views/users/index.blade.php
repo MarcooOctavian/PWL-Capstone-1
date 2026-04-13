@@ -32,7 +32,7 @@
                     <table class="table table-hover text-nowrap">
                         <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>No</th>
                             <th>Name</th>
                             <th>Email</th>
                             <th>Phone</th>
@@ -45,7 +45,7 @@
                         <tbody>
                         @foreach($users as $user)
                             <tr>
-                                <td>{{ $user->id }}</td>
+                                <td>{{ $loop->iteration }}</td>
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->email }}</td>
                                 <td>{{ $user->phone }}</td>

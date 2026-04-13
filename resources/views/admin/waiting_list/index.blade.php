@@ -24,7 +24,7 @@
                     <table class="table table-hover text-nowrap">
                         <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>No</th>
                             <th>Nama Pembeli</th>
                             <th>Event</th>
                             <th>Jenis Tiket</th>
@@ -36,7 +36,7 @@
                         <tbody>
                         @forelse($waitingLists as $list)
                             <tr>
-                                <td>{{ $list->id }}</td>
+                                <td>{{ $loop->iteration }}</td>
                                 <td>{{ $list->user->name ?? 'User Tidak Diketahui' }}</td>
                                 <td>{{ $list->event->title ?? 'N/A' }}</td>
                                 <td>{{ $list->ticketType->name ?? 'N/A' }}</td>

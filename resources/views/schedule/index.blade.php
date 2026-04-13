@@ -18,7 +18,7 @@
         <table class="table table-hover text-nowrap">
           <thead>
             <tr>
-              <th>ID</th>
+              <th>No</th>
               <th>Event Name</th>
               <th>Start Time</th>
               <th>End Time</th>
@@ -29,7 +29,7 @@
           <tbody>
             @foreach($schedules as $schedule)
             <tr>
-              <td>{{ $schedule->id }}</td>
+              <td>{{ $loop->iteration }}</td>
               <td>{{ $schedule->event->title ?? 'N/A' }}</td>
               <td>{{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }}</td>
               <td>{{ \Carbon\Carbon::parse($schedule->end_time)->format('H:i') }}</td>
