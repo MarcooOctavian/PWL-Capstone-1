@@ -34,8 +34,8 @@
         <div class="nav-menu">
             <nav class="mainmenu mobile-menu">
                 <ul>
-                    <li class="active"><a href="/">Home</a></li>
-                    <li><a href="{{ route('events.public') }}">Events</a></li>
+                    <li class="{{ request()->is('/') || request()->is('home') ? 'active' : '' }}"><a href="/">Home</a></li>
+                    <li class="{{ request()->is('events*') ? 'active' : '' }}"><a href="{{ route('events.public') }}">Events</a></li>
                 </ul>
             </nav>
             @guest
