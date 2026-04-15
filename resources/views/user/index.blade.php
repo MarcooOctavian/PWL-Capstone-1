@@ -23,26 +23,31 @@
             <div class="row">
                 <div class="col-lg-4">
                     <div class="counter-text">
-                        <span>Jadwal Terdekat</span>
+                        <span>
+                            Jadwal Terdekat
+                            @if(!empty($nextEvent))
+                                : {{ $nextEvent->title }}
+                            @endif
+                        </span>
                         <h3>Hitung Mundur <br />Menuju Acara</h3>
                     </div>
                 </div>
                 <div class="col-lg-8">
-                    <div class="cd-timer" id="countdown">
+                    <div class="cd-timer" id="countdown" data-countdown-date="{{ $countdownTarget }}">
                         <div class="cd-item">
-                            <span>40</span>
+                            <span>00</span>
                             <p>Hari</p>
                         </div>
                         <div class="cd-item">
-                            <span>18</span>
+                            <span>00</span>
                             <p>Jam</p>
                         </div>
                         <div class="cd-item">
-                            <span>46</span>
+                            <span>00</span>
                             <p>Menit</p>
                         </div>
                         <div class="cd-item">
-                            <span>32</span>
+                            <span>00</span>
                             <p>Detik</p>
                         </div>
                     </div>

@@ -20,7 +20,7 @@
         <table class="table table-hover text-nowrap">
           <thead>
             <tr>
-              <th>No</th>
+              <th>Organizer</th>
               <th>Event Title</th>
               <th>Category</th>
               <th>Location</th>
@@ -34,7 +34,7 @@
           <tbody>
             @foreach($events as $event)
             <tr>
-              <td>{{ $loop->iteration }}</td>
+              <td>{{ $event->organizer->name ?? 'N/A' }}</td>
               <td>{{ $event->title }}</td>
               <td>{{ $event->category->name ?? 'N/A' }}</td>
               <td>{{ $event->location->venue_name ?? 'N/A' }}</td>
@@ -62,7 +62,7 @@
             @endforeach
             @if($events->isEmpty())
                 <tr>
-                    <td colspan="8" class="text-center">No events found. Create your first event to get started!</td>
+                    <td colspan="{{ (Auth::check() && Auth::user()->role != 3) ? 7 : 6 }}" class="text-center">No events found. Create your first event to get started!</td>
                 </tr>
             @endif
           </tbody>

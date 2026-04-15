@@ -39,7 +39,7 @@
                                 <div class="col-lg-4">
                                     <div class="si-pic">
                                         @if($event->banner_url)
-                                            <img src="{{ asset($event->banner_url) }}" alt="">
+                                            <img src="{{ Storage::url($event->banner_url) }}" alt="">
                                         @else
                                             <div style="width:100%; height:200px; background:#eee; display:flex; align-items:center; justify-content:center;">
                                                 <span>No Image</span>

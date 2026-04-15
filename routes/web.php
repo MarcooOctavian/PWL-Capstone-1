@@ -18,8 +18,27 @@ use App\Http\Controllers\EventController;
 
 // DEFAULT ROUTE
 Route::get('/', function () {
-    $events = Event::latest()->get();
-    return view('user.index', compact('events'));
+    $events = Event::where(function ($query) {
+            $query->where('status', 'Upcoming')
+                ->orWhere('status', 'upcoming');
+        })
+        ->whereDate('date', '>=', \Carbon\Carbon::today())
+        ->latest('date')
+        ->get();
+
+    $nextEvent = Event::where(function ($query) {
+            $query->where('status', 'Upcoming')
+                ->orWhere('status', 'upcoming');
+        })
+        ->whereDate('date', '>=', \Carbon\Carbon::today())
+        ->orderBy('date', 'asc')
+        ->first();
+
+    $countdownTarget = $nextEvent
+        ? \Carbon\Carbon::parse($nextEvent->date)->format('Y/m/d')
+        : null;
+
+    return view('user.index', compact('events', 'nextEvent', 'countdownTarget'));
 })->name('home');
 // -----------------------
 
@@ -118,18 +137,27 @@ Route::middleware(['auth', CheckUserStatus::class,RoleMiddleware::class])->group
             'eventLabels', 'eventData', 'typeLabels', 'typeData' // <- Data baru untuk grafik
         ));
     })->middleware(['auth', 'verified'])->name('dashboard');
-    // USERS
-    Route::resource('users', UserController::class);
+    // ADMIN ONLY ROUTES
+    Route::middleware(RoleMiddleware::class.':1')->group(function () {
+        // USERS
+        Route::resource('users', UserController::class);
+        Route::patch('/users/{id}/status', [UserController::class, 'updateStatus'])->name('users.updateStatus');
+        
+        // CATEGORIES
+        Route::resource('categories', App\Http\Controllers\CategoryController::class);
+        
+        // LOCATIONS
+        Route::resource('locations', App\Http\Controllers\LocationController::class);
+    });
+
     // EVENTS
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('events', EventController::class);
     });
+    
     // SCHEDULES
     Route::resource('schedules', App\Http\Controllers\ScheduleController::class);
-    // CATEGORIES
-    Route::resource('categories', App\Http\Controllers\CategoryController::class);
-    // LOCATIONS
-    Route::resource('locations', App\Http\Controllers\LocationController::class);
+    
     // TICKET TYPES
     Route::resource('ticket-types', App\Http\Controllers\TypeTicketController::class);
     Route::get('/ticket-types/event/{id}', [TypeTicketController::class, 'byEvent'])->name('ticket-types.manage');
@@ -139,9 +167,7 @@ Route::middleware(['auth', CheckUserStatus::class,RoleMiddleware::class])->group
     Route::get('/admin/waiting-list', [WaitingListController::class, 'index'])->name('admin.waiting-list.index');
     // 2. Rute untuk Admin mengubah status antrean
     Route::put('/admin/waiting-list/{waitingList}', [WaitingListController::class, 'update'])->name('waiting-list.update');
-    // RUTE UPDATE STATUS
-    Route::patch('/users/{id}/status', [UserController::class, 'updateStatus'])
-        ->name('users.updateStatus');
+    Route::put('/admin/waiting-list/{waitingList}', [WaitingListController::class, 'update'])->name('waiting-list.update');
 });
 // -----------------------
 

@@ -10,14 +10,24 @@ class ScheduleController extends Controller
 {
     public function index()
     {
-        // Fetch schedules with related event and location data to avoid N+1 issues
-        $schedules = Schedule::with(['event', 'location'])->get();
+        if (auth()->user()->role == 1) {
+            $schedules = Schedule::with(['event', 'location'])->get();
+        } else {
+            $schedules = Schedule::with(['event', 'location'])
+                ->whereHas('event', function($q) {
+                    $q->where('organizer_id', auth()->id());
+                })->get();
+        }
         return view('schedule.index', compact('schedules'));
     }
 
     public function create()
     {
-        $events = Event::all();
+        if (auth()->user()->role == 1) {
+            $events = Event::all();
+        } else {
+            $events = Event::where('organizer_id', auth()->id())->get();
+        }
         $locations = Location::all();
         return view('schedule.create', compact('events', 'locations'));
     }
@@ -31,25 +41,46 @@ class ScheduleController extends Controller
             'end_time' => 'required',
         ]);
 
+        $event = Event::findOrFail($request->event_id);
+        if (auth()->user()->role != 1 && $event->organizer_id != auth()->id()) {
+            abort(403, 'Akses ditolak');
+        }
+
         Schedule::create($request->all());
         return redirect()->route('schedules.index')->with('success', 'Schedule created successfully.');
     }
 
     public function edit(Schedule $schedule)
     {
-        $events = Event::all();
+        if (auth()->user()->role != 1 && $schedule->event->organizer_id != auth()->id()) {
+            abort(403, 'Akses ditolak');
+        }
+        if (auth()->user()->role == 1) {
+            $events = Event::all();
+        } else {
+            $events = Event::where('organizer_id', auth()->id())->get();
+        }
         $locations = Location::all();
         return view('schedule.edit', compact('schedule', 'events', 'locations'));
     }
 
     public function update(Request $request, Schedule $schedule)
     {
-         $request->validate([
+        if (auth()->user()->role != 1 && $schedule->event->organizer_id != auth()->id()) {
+            abort(403, 'Akses ditolak');
+        }
+
+        $request->validate([
             'event_id' => 'required|exists:events,id',
             'location_id' => 'required|exists:locations,id',
             'start_time' => 'required',
             'end_time' => 'required',
         ]);
+
+        $event = Event::findOrFail($request->event_id);
+        if (auth()->user()->role != 1 && $event->organizer_id != auth()->id()) {
+            abort(403, 'Akses ditolak');
+        }
 
         $schedule->update($request->all());
         return redirect()->route('schedules.index')->with('success', 'Schedule updated successfully.');
@@ -57,6 +88,9 @@ class ScheduleController extends Controller
 
     public function destroy(Schedule $schedule)
     {
+        if (auth()->user()->role != 1 && $schedule->event->organizer_id != auth()->id()) {
+            abort(403, 'Akses ditolak');
+        }
         $schedule->delete();
         return redirect()->route('schedules.index')->with('success', 'Schedule deleted successfully.');
     }

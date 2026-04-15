@@ -95,28 +95,25 @@
     /*------------------
         CountDown
     --------------------*/
-    // For demo preview
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-    var yyyy = today.getFullYear();
+    var $countdown = $("#countdown");
+    var timerdate = $countdown.data("countdown-date");
 
-    if(mm == 12) {
-        mm = '01';
-        yyyy = yyyy + 1;
-    } else {
-        mm = parseInt(mm) + 1;
-        mm = String(mm).padStart(2, '0');
+    if ($countdown.length && timerdate) {
+        $countdown.countdown(timerdate, function(event) {
+            $(this).html(event.strftime(
+                "<div class='cd-item'><span>%D</span> <p>Hari</p> </div>" +
+                "<div class='cd-item'><span>%H</span> <p>Jam</p> </div>" +
+                "<div class='cd-item'><span>%M</span> <p>Menit</p> </div>" +
+                "<div class='cd-item'><span>%S</span> <p>Detik</p> </div>"
+            ));
+        });
+    } else if ($countdown.length) {
+        $countdown.html(
+            "<div class='cd-item'><span>00</span> <p>Hari</p> </div>" +
+            "<div class='cd-item'><span>00</span> <p>Jam</p> </div>" +
+            "<div class='cd-item'><span>00</span> <p>Menit</p> </div>" +
+            "<div class='cd-item'><span>00</span> <p>Detik</p> </div>"
+        );
     }
-    var timerdate = mm + '/' + dd + '/' + yyyy;
-    // For demo preview end
-    
-
-    // Use this for real timer date
-    /*  var timerdate = "2020/01/01"; */
-
-	$("#countdown").countdown(timerdate, function(event) {
-        $(this).html(event.strftime("<div class='cd-item'><span>%D</span> <p>Days</p> </div>" + "<div class='cd-item'><span>%H</span> <p>Hrs</p> </div>" + "<div class='cd-item'><span>%M</span> <p>Mins</p> </div>" + "<div class='cd-item'><span>%S</span> <p>Secs</p> </div>"));
-    });
 
 })(jQuery);

@@ -49,7 +49,7 @@
                         </div>
 
                         <div class="form-group row">
-                            <div class="col-sm-12">
+                            <div class="col-sm-6">
                                 <label>Status</label>
                                 <select name="status" class="form-control @error('status') is-invalid @enderror" required>
                                     <option value="Upcoming" {{ old('status') == 'Upcoming' ? 'selected' : '' }}>Upcoming</option>
@@ -58,6 +58,20 @@
                                 </select>
                                 @error('status')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
+                            @if(auth()->user()->role == 1)
+                            <div class="col-sm-6">
+                                <label>Organizer</label>
+                                <select name="organizer_id" class="form-control @error('organizer_id') is-invalid @enderror" required>
+                                    <option value="">-- Select Organizer --</option>
+                                    @foreach($organizers as $org)
+                                        <option value="{{ $org->id }}" {{ old('organizer_id', auth()->id()) == $org->id ? 'selected' : '' }}>
+                                            {{ $org->name }} ({{ $org->role == 1 ? 'Admin' : 'Organizer' }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('organizer_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                            @endif
                         </div>
 
                         <div class="form-group">

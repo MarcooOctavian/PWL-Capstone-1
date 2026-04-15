@@ -22,7 +22,6 @@
                     <table class="table table-hover text-nowrap">
                         <thead>
                         <tr>
-                            <th>No</th>
                             <th>Event</th>
                             <th>Date</th>
                             <th>Status</th>
@@ -33,7 +32,6 @@
                         <tbody>
                         @foreach($events as $event)
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
                                 <td>{{ $event->title }}</td>
                                 <td>{{ $event->date }}</td>
                                 <td>{{ $event->status }}</td>
@@ -48,7 +46,7 @@
 
                         @if($events->isEmpty())
                             <tr>
-                                <td colspan="5" class="text-center">No events found</td>
+                                <td colspan="4" class="text-center">No events found</td>
                             </tr>
                         @endif
                         </tbody>

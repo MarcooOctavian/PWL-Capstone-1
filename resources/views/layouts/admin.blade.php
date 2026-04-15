@@ -73,6 +73,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </a>
           </li>
 
+          <!-- View Front Page -->
+          <li class="nav-item">
+            <a href="{{ route('home') }}" class="nav-link" target="_blank" rel="noopener noreferrer">
+              <i class="nav-icon fas fa-globe"></i>
+              <p>View Front Page</p>
+            </a>
+          </li>
+
           <!-- Events -->
           <li class="nav-item">
               <a href="{{ route('admin.events.index') }}" class="nav-link">
@@ -81,6 +89,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </a>
           </li>
 
+          @if(auth()->user()->role == 1)
           <!-- Locations -->
           <li class="nav-item">
             <a href="{{ url('/locations') }}" class="nav-link">
@@ -88,6 +97,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <p>Locations</p>
             </a>
           </li>
+          @endif
 
           <!-- Schedules -->
           <li class="nav-item">
@@ -97,6 +107,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </a>
           </li>
 
+          @if(auth()->user()->role == 1)
           <!-- Categories -->
           <li class="nav-item">
             <a href="{{ url('/categories') }}" class="nav-link">
@@ -104,6 +115,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <p>Categories</p>
             </a>
           </li>
+          @endif
 
           <!-- Ticket Types -->
             <li class="nav-item">
@@ -113,6 +125,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
             </li>
 
+            @if(auth()->user()->role == 1)
             <li class="nav-item">
                 <a href="{{ route('admin.waiting-list.index') }}" class="nav-link {{ Request::is('admin/waiting-list') ? 'active' : '' }}">
                     <i class="nav-icon fas fa-clock"></i>
@@ -126,6 +139,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <p>Users</p>
                 </a>
             </li>
+            @endif
 
             @else
                 <!-- Reactivate Account -->
@@ -188,10 +202,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
   <!-- Main Footer -->
   <footer class="main-footer">
-    <!-- To the right -->
-    <div class="float-right d-none d-sm-inline">
-      Anything you want
-    </div>
     <!-- Default to the left -->
     <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
   </footer>

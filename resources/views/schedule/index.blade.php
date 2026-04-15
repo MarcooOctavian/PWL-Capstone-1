@@ -18,7 +18,6 @@
         <table class="table table-hover text-nowrap">
           <thead>
             <tr>
-              <th>No</th>
               <th>Event Name</th>
               <th>Start Time</th>
               <th>End Time</th>
@@ -29,7 +28,6 @@
           <tbody>
             @foreach($schedules as $schedule)
             <tr>
-              <td>{{ $loop->iteration }}</td>
               <td>{{ $schedule->event->title ?? 'N/A' }}</td>
               <td>{{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }}</td>
               <td>{{ \Carbon\Carbon::parse($schedule->end_time)->format('H:i') }}</td>
@@ -46,7 +44,7 @@
             @endforeach
             @if($schedules->isEmpty())
             <tr>
-              <td colspan="6" class="text-center">No schedules found. Create an event and location first!</td>
+              <td colspan="5" class="text-center">No schedules found. Create an event and location first!</td>
             </tr>
             @endif
           </tbody>

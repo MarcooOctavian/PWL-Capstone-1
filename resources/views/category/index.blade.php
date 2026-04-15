@@ -18,7 +18,6 @@
         <table class="table table-hover text-nowrap">
           <thead>
             <tr>
-              <th>No</th>
               <th>Category Name</th>
               <th>Description</th>
               <th>Actions</th>
@@ -27,7 +26,6 @@
           <tbody>
             @foreach($categories as $category)
             <tr>
-              <td>{{ $loop->iteration }}</td>
               <td>{{ $category->name }}</td>
               <td>{{ $category->description ?? '-' }}</td>
               <td>
@@ -42,7 +40,7 @@
             @endforeach
             @if($categories->isEmpty())
             <tr>
-              <td colspan="4" class="text-center">No categories found in the database.</td>
+              <td colspan="3" class="text-center">No categories found in the database.</td>
             </tr>
             @endif
           </tbody>

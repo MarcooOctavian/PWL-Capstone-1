@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('quota');
             $table->string('status')->default('upcoming');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

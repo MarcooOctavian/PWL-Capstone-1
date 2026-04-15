@@ -24,6 +24,6 @@ class Ticket extends Model
 
     public function typeTicket()
     {
-        return $this->belongsTo(TypeTicket::class);
+        return $this->belongsTo(TypeTicket::class)->withTrashed();
     }
 }

@@ -18,7 +18,6 @@
         <table class="table table-hover text-nowrap">
           <thead>
             <tr>
-              <th>No</th>
               <th>Venue Name</th>
               <th>Address</th>
               <th>City</th>
@@ -28,7 +27,6 @@
           <tbody>
             @foreach($locations as $location)
             <tr>
-              <td>{{ $loop->iteration }}</td>
               <td>{{ $location->venue_name }}</td>
               <td>{{ Str::limit($location->address, 30) }}</td>
               <td>{{ $location->city }}</td>
@@ -44,7 +42,7 @@
             @endforeach
             @if($locations->isEmpty())
             <tr>
-              <td colspan="5" class="text-center">No locations found. Add your first venue now!</td>
+              <td colspan="4" class="text-center">No locations found. Add your first venue now!</td>
             </tr>
             @endif
           </tbody>

@@ -10,13 +10,21 @@ class TypeTicketController extends Controller
 {
     public function index()
     {
-        $events = \App\Models\Event::all();
+        if (auth()->user()->role == 1) {
+            $events = \App\Models\Event::all();
+        } else {
+            $events = \App\Models\Event::where('organizer_id', auth()->id())->get();
+        }
         return view('admin.ticket_types.index', compact('events'));
     }
 
     public function create(Request $request)
     {
-        $events = \App\Models\Event::all();
+        if (auth()->user()->role == 1) {
+            $events = \App\Models\Event::all();
+        } else {
+            $events = \App\Models\Event::where('organizer_id', auth()->id())->get();
+        }
         $selectedEvent = $request->event_id;
         return view('admin.ticket_types.create', compact('events','selectedEvent'));
     }
@@ -31,6 +39,11 @@ class TypeTicketController extends Controller
             'max_purchase' => 'required|integer|min:1',
         ]);
 
+        $event = \App\Models\Event::findOrFail($request->event_id);
+        if (auth()->user()->role != 1 && $event->organizer_id != auth()->id()) {
+            abort(403, 'Akses ditolak');
+        }
+
         TypeTicket::create($data);
         return redirect()->route('ticket-types.manage', $request->event_id)
             ->with('success', 'Ticket created successfully');
@@ -44,12 +57,24 @@ class TypeTicketController extends Controller
     public function edit($id)
     {
         $ticketType = TypeTicket::findOrFail($id);
-        $events = \App\Models\Event::all();
+        if (auth()->user()->role != 1 && $ticketType->event->organizer_id != auth()->id()) {
+            abort(403, 'Akses ditolak');
+        }
+        if (auth()->user()->role == 1) {
+            $events = \App\Models\Event::all();
+        } else {
+            $events = \App\Models\Event::where('organizer_id', auth()->id())->get();
+        }
         return view('admin.ticket_types.edit', compact('ticketType', 'events'));
     }
 
     public function update(Request $request, $id)
     {
+        $ticketType = TypeTicket::findOrFail($id);
+        if (auth()->user()->role != 1 && $ticketType->event->organizer_id != auth()->id()) {
+            abort(403, 'Akses ditolak');
+        }
+
         $data = $request->validate([
             'event_id' => 'required|exists:events,id',
             'name' => 'required|string|max:50',
@@ -58,7 +83,11 @@ class TypeTicketController extends Controller
             'max_purchase' => 'required|integer|min:1',
         ]);
 
-        $ticketType = TypeTicket::findOrFail($id);
+        $event = \App\Models\Event::findOrFail($request->event_id);
+        if (auth()->user()->role != 1 && $event->organizer_id != auth()->id()) {
+            abort(403, 'Akses ditolak');
+        }
+
         $oldStock = $ticketType->stock;
 
         $ticketType->update($data);
@@ -88,13 +117,20 @@ class TypeTicketController extends Controller
 
     public function destroy($id)
     {
-        TypeTicket::findOrFail($id)->delete();
+        $ticketType = TypeTicket::findOrFail($id);
+        if (auth()->user()->role != 1 && $ticketType->event->organizer_id != auth()->id()) {
+            abort(403, 'Akses ditolak');
+        }
+        $ticketType->delete();
         return back()->with('success', 'Ticket Type deleted successfully!');
     }
 
     public function byEvent($id)
     {
         $event = \App\Models\Event::findOrFail($id);
+        if (auth()->user()->role != 1 && $event->organizer_id != auth()->id()) {
+            abort(403, 'Akses ditolak');
+        }
 
         $ticketTypes = TypeTicket::with('event')
             ->where('event_id', $id)

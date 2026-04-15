@@ -9,7 +9,7 @@
       <div class="card-header">
         <h3 class="card-title">Edit Event: {{ $event->title }}</h3>
       </div>
-      <form action="{{ route('admin.events.update', $event->id) }}" method="POST">
+      <form action="{{ route('admin.events.update', $event->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="card-body">
@@ -48,7 +48,7 @@
           </div>
 
           <div class="form-group row">
-            <div class="col-sm-12">
+            <div class="col-sm-6">
                 <label>Status</label>
                 <select name="status" class="form-control @error('status') is-invalid @enderror" required>
                   <option value="Upcoming" {{ old('status', $event->status) == 'Upcoming' ? 'selected' : '' }}>Upcoming</option>
@@ -57,12 +57,40 @@
                 </select>
                 @error('status')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
+            @if(auth()->user()->role == 1)
+            <div class="col-sm-6">
+                <label>Organizer</label>
+                <select name="organizer_id" class="form-control @error('organizer_id') is-invalid @enderror" required>
+                    <option value="">-- Select Organizer --</option>
+                    @foreach($organizers as $org)
+                        <option value="{{ $org->id }}" {{ old('organizer_id', $event->organizer_id) == $org->id ? 'selected' : '' }}>
+                            {{ $org->name }} ({{ $org->role == 1 ? 'Admin' : 'Organizer' }})
+                        </option>
+                    @endforeach
+                </select>
+                @error('organizer_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+            @endif
           </div>
 
           <div class="form-group">
             <label>Event Description</label>
             <textarea name="description" class="form-control @error('description') is-invalid @enderror" rows="3">{{ old('description', $event->description) }}</textarea>
             @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
+          </div>
+
+          <div class="form-group">
+            <label>Event Banner (Opsional)</label>
+            @if($event->banner_url)
+                <div class="mb-2">
+                    <img src="{{ Storage::url($event->banner_url) }}" alt="Banner" width="200" class="img-thumbnail">
+                </div>
+            @endif
+            <div class="custom-file">
+                <input type="file" name="banner_url" class="custom-file-input @error('banner_url') is-invalid @enderror" id="customFile" accept="image/jpeg,image/png,image/jpg" onchange="document.getElementById('file-label').innerHTML = this.files[0].name">
+                <label class="custom-file-label" id="file-label" for="customFile">Pilih Gambar Baru (JPG/PNG)</label>
+            </div>
+            @error('banner_url')<div class="text-danger mt-1" style="font-size: 80%;">{{ $message }}</div>@enderror
           </div>
         </div>
         <div class="card-footer text-right">

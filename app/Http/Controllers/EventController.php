@@ -12,23 +12,33 @@ class EventController extends Controller
 {
     public function index()
     {
-        $events = Event::with(['organizer', 'category', 'location'])->get();
+        if (auth()->user()->role == 1) {
+            $events = Event::with(['organizer', 'category', 'location'])->get();
+        } else {
+            $events = Event::with(['organizer', 'category', 'location'])
+                ->where('organizer_id', auth()->id())
+                ->get();
+        }
         return view('event.index', compact('events'));
     }
 
     public function create()
     {
+        abort_if(auth()->user()->role != 1, 403, 'Akses ditolak');
         $categories = Category::all();
         $locations = Location::all();
-        return view('event.create', compact('categories', 'locations'));
+        $organizers = \App\Models\User::whereIn('role', [1, 2])->get();
+        return view('event.create', compact('categories', 'locations', 'organizers'));
     }
 
     public function store(Request $request)
     {
+        abort_if(auth()->user()->role != 1, 403, 'Akses ditolak');
         $request->validate([
             'title' => 'required|string|max:200',
             'category_id' => 'required|exists:categories,id',
             'location_id' => 'required|exists:locations,id',
+            'organizer_id' => 'required|exists:users,id',
             'date' => 'required|date',
             'status' => 'required|string',
             'description' => 'nullable|string',
@@ -36,7 +46,6 @@ class EventController extends Controller
         ]);
 
         $data = $request->all();
-        $data['organizer_id'] = Auth::id(); // Assign user saat ini sebagai organizer
 
         // --- PROSES UPLOAD BANNER ---
         if ($request->hasFile('banner_url')) {
@@ -49,14 +58,22 @@ class EventController extends Controller
 
     public function edit(Event $event)
     {
+        if (auth()->user()->role != 1 && $event->organizer_id != auth()->id()) {
+            abort(403, 'Akses ditolak');
+        }
         $categories = Category::all();
         $locations = Location::all();
-        return view('event.edit', compact('event', 'categories', 'locations'));
+        $organizers = \App\Models\User::whereIn('role', [1, 2])->get();
+        return view('event.edit', compact('event', 'categories', 'locations', 'organizers'));
     }
 
     public function update(Request $request, Event $event)
     {
-        $request->validate([
+        if (auth()->user()->role != 1 && $event->organizer_id != auth()->id()) {
+            abort(403, 'Akses ditolak');
+        }
+
+        $rules = [
             'title' => 'required|string|max:200',
             'category_id' => 'required|exists:categories,id',
             'location_id' => 'required|exists:locations,id',
@@ -64,9 +81,18 @@ class EventController extends Controller
             'status' => 'required|string',
             'description' => 'nullable|string',
             'banner_url' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
+        ];
+
+        if (auth()->user()->role == 1) {
+            $rules['organizer_id'] = 'required|exists:users,id';
+        }
+
+        $request->validate($rules);
 
         $data = $request->all();
+        if (auth()->user()->role != 1) {
+            unset($data['organizer_id']); // Prevent organizer from reassigning
+        }
 
         // --- PROSES UPLOAD BANNER SAAT EDIT ---
         if ($request->hasFile('banner_url')) {
@@ -84,6 +110,7 @@ class EventController extends Controller
 
     public function destroy(Event $event)
     {
+        abort_if(auth()->user()->role != 1, 403, 'Akses ditolak');
         if ($event->banner_url && Storage::disk('public')->exists($event->banner_url)) {
             Storage::disk('public')->delete($event->banner_url);
         }
@@ -94,7 +121,14 @@ class EventController extends Controller
 
     public function publicIndex()
     {
-        $events = Event::latest()->get();
+        $events = Event::where(function ($query) {
+                $query->where('status', 'Upcoming')
+                    ->orWhere('status', 'upcoming');
+            })
+            ->whereDate('date', '>=', now()->toDateString())
+            ->latest('date')
+            ->get();
+
         return view('user.events', compact('events'));
     }
 }

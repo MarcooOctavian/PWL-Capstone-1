@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('city', 100);
             $table->string('maps_url', 200)->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
