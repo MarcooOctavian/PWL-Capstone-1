@@ -7,17 +7,26 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
+    /**
+     * Display all categories
+     */
     public function index()
     {
         $categories = Category::all();
         return view('category.index', compact('categories'));
     }
 
+    /**
+     * Create category
+     */
     public function create()
     {
         return view('category.create');
     }
 
+    /**
+     * Store category
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -30,11 +39,17 @@ class CategoryController extends Controller
         return redirect()->route('categories.index')->with('success', 'Category created successfully.');
     }
 
+    /**
+     * Show category
+     */
     public function show(Category $category)
     {
         // Not used yet
     }
 
+    /**
+     * Edit category
+     */
     public function edit(Category $category)
     {
         return view('category.edit', compact('category'));
@@ -52,6 +67,9 @@ class CategoryController extends Controller
         return redirect()->route('categories.index')->with('success', 'Category updated successfully.');
     }
 
+    /**
+     * Delete category
+     */
     public function destroy(Category $category)
     {
         $category->delete();

@@ -8,12 +8,18 @@ use App\Models\User;
 
 class OrganizerRequestController extends Controller
 {
+    /**
+     * Display all organizer requests
+     */
     public function index()
     {
         $requests = OrganizerRequest::with('user')->latest()->get();
         return view('admin.organizer-requests', compact('requests'));
     }
 
+    /**
+     * Create organizer request
+     */
     public function create()
     {
         $user = auth()->user();
@@ -23,6 +29,9 @@ class OrganizerRequestController extends Controller
         return view('user.organizer-request', compact('pending'));
     }
 
+    /**
+     * Store organizer request
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -51,6 +60,9 @@ class OrganizerRequestController extends Controller
             ->with('success', 'Permintaan berhasil dikirim!');
     }
 
+    /**
+     * Approve organizer request
+     */
     public function approve($id)
     {
         $req = OrganizerRequest::findOrFail($id);
@@ -64,6 +76,9 @@ class OrganizerRequestController extends Controller
         return back()->with('success', 'User sekarang menjadi organizer.');
     }
 
+    /**
+     * Reject organizer request
+     */
     public function reject($id)
     {
         $req = OrganizerRequest::findOrFail($id);

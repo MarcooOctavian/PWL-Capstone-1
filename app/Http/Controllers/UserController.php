@@ -124,14 +124,14 @@ class UserController extends Controller
         ]);
         $user = auth()->user();
 
-        // cek email & password
+        // Check email & password
         if ($request->email != $user->email || !Hash::check($request->password, $user->password)) {
             return back()->withErrors([
                 'email' => 'Email atau password salah'
             ]);
         }
 
-        // aktifkan akun
+        // Activate account
         $user->status = 1;
         $user->last_login_at = now();
         $user->save();

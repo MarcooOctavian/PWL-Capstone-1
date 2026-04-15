@@ -10,13 +10,17 @@ use Carbon\Carbon;
 
 class TransactionsExport implements FromCollection, WithHeadings, WithMapping
 {
-    // Get all data
+    /**
+     * Get all data
+     */
     public function collection()
     {
         return Ticket::with(['transaction.user', 'typeTicket.event'])->latest()->get();
     }
 
-    // Header for excel
+    /**
+     * Header for excel
+     */
     public function headings(): array
     {
         return [
@@ -31,7 +35,9 @@ class TransactionsExport implements FromCollection, WithHeadings, WithMapping
         ];
     }
 
-    // Mapping
+    /**
+     * Mapping
+     */
     public function map($ticket): array
     {
         $buyerName = $ticket->transaction->user->name ?? 'Guest/Unknown';

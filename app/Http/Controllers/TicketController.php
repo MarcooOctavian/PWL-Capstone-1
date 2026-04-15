@@ -32,7 +32,7 @@ class TicketController extends Controller
     }
 
     /**
-     * Show E-Ticket (menampilkan semua tiket dalam 1 kali transaksi)
+     * Show E-Ticket (display all tickets in one transaction)
      */
     public function show($id)
     {
@@ -43,29 +43,33 @@ class TicketController extends Controller
         return view('user.e-ticket', compact('allTickets'));
     }
 
+    // Cancel ticket
     public function cancel($id)
     {
         $ticket = Ticket::findOrFail($id);
         $typeTicket = $ticket->typeTicket;
 
-        // 1. Tambahkan stok kembali
+        // 1. Add stock back
         $typeTicket->increment('stock');
 
-        // 2. Hapus tiket
+        // 2. Delete ticket
         $ticket->delete();
 
-        // 3. Notifikasi
+        // 3. Notification
+        // Find the first person in the waiting list who is waiting for this ticket type
         $firstInLine = \App\Models\WaitingList::where('type_ticket_id', $typeTicket->id)
             ->where('status', 'pending')
             ->orderBy('created_at', 'asc')
             ->first();
 
         if ($firstInLine) {
+            //
         }
 
         return back()->with('success', 'Tiket berhasil dibatalkan dan stok telah dikembalikan.');
     }
 
+    // Scan ticket
     public function scanTicket($qr_code)
     {
         $ticket = Ticket::with(['transaction.user', 'typeTicket.event'])
@@ -75,6 +79,7 @@ class TicketController extends Controller
         return view('user.scan-result', compact('ticket'));
     }
 
+    // Process scan
     public function processScan(Request $request, $qr_code)
     {
         $ticket = Ticket::where('qr_code', $qr_code)->firstOrFail();

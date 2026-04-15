@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 
 class ScheduleController extends Controller
 {
+    /**
+     * Display all schedules
+     */
     public function index()
     {
         if (auth()->user()->role == 1) {
@@ -21,6 +24,9 @@ class ScheduleController extends Controller
         return view('schedule.index', compact('schedules'));
     }
 
+    /**
+     * Create schedule
+     */
     public function create()
     {
         if (auth()->user()->role == 1) {
@@ -32,6 +38,9 @@ class ScheduleController extends Controller
         return view('schedule.create', compact('events', 'locations'));
     }
 
+    /**
+     * Store schedule
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -50,6 +59,9 @@ class ScheduleController extends Controller
         return redirect()->route('schedules.index')->with('success', 'Schedule created successfully.');
     }
 
+    /**
+     * Edit schedule
+     */
     public function edit(Schedule $schedule)
     {
         if (auth()->user()->role != 1 && $schedule->event->organizer_id != auth()->id()) {
@@ -64,6 +76,9 @@ class ScheduleController extends Controller
         return view('schedule.edit', compact('schedule', 'events', 'locations'));
     }
 
+    /**
+     * Update schedule
+     */
     public function update(Request $request, Schedule $schedule)
     {
         if (auth()->user()->role != 1 && $schedule->event->organizer_id != auth()->id()) {
@@ -86,6 +101,9 @@ class ScheduleController extends Controller
         return redirect()->route('schedules.index')->with('success', 'Schedule updated successfully.');
     }
 
+    /**
+     * Delete schedule
+     */
     public function destroy(Schedule $schedule)
     {
         if (auth()->user()->role != 1 && $schedule->event->organizer_id != auth()->id()) {

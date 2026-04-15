@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Storage;
 
 class EventController extends Controller
 {
+    /**
+     * Display all events
+     */
     public function index()
     {
         if (auth()->user()->role == 1) {
@@ -22,6 +25,9 @@ class EventController extends Controller
         return view('event.index', compact('events'));
     }
 
+    /**
+     * Create event
+     */
     public function create()
     {
         abort_if(auth()->user()->role != 1, 403, 'Akses ditolak');
@@ -31,6 +37,9 @@ class EventController extends Controller
         return view('event.create', compact('categories', 'locations', 'organizers'));
     }
 
+    /**
+     * Store event
+     */
     public function store(Request $request)
     {
         abort_if(auth()->user()->role != 1, 403, 'Akses ditolak');
@@ -47,7 +56,7 @@ class EventController extends Controller
 
         $data = $request->all();
 
-        // --- PROSES UPLOAD BANNER ---
+        // Upload banner
         if ($request->hasFile('banner_url')) {
             $data['banner_url'] = $request->file('banner_url')->store('banners', 'public');
         }
@@ -56,6 +65,9 @@ class EventController extends Controller
         return redirect()->route('admin.events.index')->with('success', 'Event created successfully.');
     }
 
+    /**
+     * Edit event
+     */
     public function edit(Event $event)
     {
         if (auth()->user()->role != 1 && $event->organizer_id != auth()->id()) {
@@ -67,6 +79,9 @@ class EventController extends Controller
         return view('event.edit', compact('event', 'categories', 'locations', 'organizers'));
     }
 
+    /**
+     * Update event
+     */
     public function update(Request $request, Event $event)
     {
         if (auth()->user()->role != 1 && $event->organizer_id != auth()->id()) {
@@ -94,7 +109,7 @@ class EventController extends Controller
             unset($data['organizer_id']); // Prevent organizer from reassigning
         }
 
-        // --- PROSES UPLOAD BANNER SAAT EDIT ---
+        // Upload banner
         if ($request->hasFile('banner_url')) {
             if ($event->banner_url && Storage::disk('public')->exists($event->banner_url)) {
                 Storage::disk('public')->delete($event->banner_url);
@@ -108,6 +123,9 @@ class EventController extends Controller
         return redirect()->route('admin.events.index')->with('success', 'Event updated successfully.');
     }
 
+    /**
+     * Delete event
+     */
     public function destroy(Event $event)
     {
         abort_if(auth()->user()->role != 1, 403, 'Akses ditolak');
@@ -119,6 +137,9 @@ class EventController extends Controller
         return redirect()->route('admin.events.index')->with('success', 'Event deleted successfully.');
     }
 
+    /**
+     * Display all events for public
+     */
     public function publicIndex()
     {
         $events = Event::where(function ($query) {

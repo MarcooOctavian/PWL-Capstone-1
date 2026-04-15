@@ -15,6 +15,9 @@ use App\Exports\TransactionsExport;
 
 class TransactionController extends Controller
 {
+    /**
+     * Create transaction
+     */
     public function create(Request $request)
     {
         if (!$request->event_id) {
@@ -29,10 +32,12 @@ class TransactionController extends Controller
         return view('user.checkout', compact('event', 'typeTickets', 'schedules'));
     }
 
-    // FUNGSI STORE
+    /**
+     * Store transaction
+     */
     public function store(Request $request)
     {
-        // 1. Validasi Input
+        // input validation
         $request->validate([
             'type_ticket_id' => 'required|exists:type_tickets,id',
             'qty' => 'required|integer|min:1',
@@ -46,8 +51,10 @@ class TransactionController extends Controller
 
         $typeTicket = \App\Models\TypeTicket::findOrFail($request->type_ticket_id);
 
-        // --- ERROR HANDLING LIMIT & STOK ---
+        // --- ERROR HANDLING LIMIT & STOCK ---
         $userId = Auth::id() ?? 1;
+
+        // Calculate total tickets already purchased or currently pending for this user
         $purchasedTicketsCount = \App\Models\Ticket::where('type_ticket_id', $typeTicket->id)
             ->whereHas('transaction', function ($query) use ($userId) {
                 $query->where('user_id', $userId)
@@ -55,6 +62,7 @@ class TransactionController extends Controller
             })
             ->count();
 
+        // Enforce user maximum purchase limit
         if (($purchasedTicketsCount + $request->qty) > $typeTicket->max_purchase) {
             return redirect()->route('checkout.create', [
                 'event_id' => $typeTicket->event_id
@@ -75,7 +83,7 @@ class TransactionController extends Controller
             ]);
         }
 
-        // 2. Simpan Data ke Session
+        // 2. Save Data to Session
         $checkoutData = [
             'type_ticket_id' => $typeTicket->id,
             'ticket_name' => $typeTicket->name,
@@ -88,8 +96,10 @@ class TransactionController extends Controller
         ];
         session()->put('checkout_data', $checkoutData);
 
-        // 2.5 Simpan Transaction Database (Pending)
+        // Save Transaction Database (Pending)
         $userId = Auth::id() ?? 1;
+        
+        // Create initial placeholder transaction before payment
         $transaction = Transaction::create([
             'user_id' => $userId,
             'total_amount' => $checkoutData['total_amount'],
@@ -113,7 +123,9 @@ class TransactionController extends Controller
         return redirect()->route('checkout.payment', $transaction->id);
     }
 
-    // FUNGSI UNTUK MENAMPILKAN HALAMAN SIMULASI PEMBAYARAN
+    /**
+     * Display payment simulation page
+     */
     public function payment($id)
     {
         $transaction = Transaction::findOrFail($id);
@@ -126,7 +138,9 @@ class TransactionController extends Controller
         return view('user.payment', compact('checkoutData', 'transaction'));
     }
 
-    // FUNGSI UNTUK MENGEKSEKUSI PEMBAYARAN (Update Status, Kirim Email)
+    /**
+     * Process payment (Update Status, Send Email)
+     */
     public function processPayment(Request $request, $id)
     {
         $transaction = Transaction::findOrFail($id);
@@ -136,12 +150,13 @@ class TransactionController extends Controller
         }
 
         // 1. Update Transaction & Tickets
+        // Mark transaction as paid and activate associated tickets
         $transaction->update(['payment_status' => 'paid']);
         $transaction->tickets()->update(['status' => 'valid']);
 
         $checkoutData = session('checkout_data');
 
-        // 2. Kirim Email
+        // 2. Send Email
         if ($checkoutData) {
             $allTickets = Ticket::with(['typeTicket.event.location', 'transaction.user'])
                 ->where('transaction_id', $transaction->id)
@@ -154,14 +169,16 @@ class TransactionController extends Controller
             }
         }
 
-        // 3. Bersihkan session
+        // 3. Clear session
         session()->forget('checkout_data');
         $firstTicket = $transaction->tickets()->first();
 
         return redirect()->route('ticket.show', $firstTicket->id)->with('success', 'Pembayaran Berhasil Diverifikasi! E-Ticket telah dikirim ke email Anda.');
     }
 
-    // FUNGSI UNTUK TIME OUT ATAU GAGAL PEMBAYARAN
+    /**
+     * Function for time out or failed payment
+     */
     public function failPayment($id)
     {
         $transaction = Transaction::findOrFail($id);
@@ -170,7 +187,7 @@ class TransactionController extends Controller
             $transaction->update(['payment_status' => 'failed']);
             $transaction->tickets()->update(['status' => 'cancelled']);
             
-            // Kembalikan Stok
+            // Revert ticket stock back to availability pool
             $firstTicket = $transaction->tickets()->first();
             if ($firstTicket) {
                 $typeTicket = $firstTicket->typeTicket;

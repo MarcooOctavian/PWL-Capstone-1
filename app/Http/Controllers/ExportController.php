@@ -11,7 +11,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 class ExportController extends Controller
 {
     /**
-     * Mengunduh data semua transaksi dalam format Excel.
+     * Export transactions to Excel
      */
     public function exportExcel()
     {
@@ -19,7 +19,7 @@ class ExportController extends Controller
     }
 
     /**
-     * Mengunduh data semua transaksi dalam format PDF.
+     * Export transactions to PDF
      */
     public function exportPdf()
     {

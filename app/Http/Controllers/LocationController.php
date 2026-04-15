@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 
 class LocationController extends Controller
 {
+    /**
+     * Display all locations
+     */
     public function index()
     {
         $locations = Location::all();
@@ -17,6 +20,9 @@ class LocationController extends Controller
         return view('location.create');
     }
 
+    /**
+     * Store location
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -30,11 +36,17 @@ class LocationController extends Controller
         return redirect()->route('locations.index')->with('success', 'Location created successfully.');
     }
 
+    /**
+     * Edit location
+     */
     public function edit(Location $location)
     {
         return view('location.edit', compact('location'));
     }
 
+    /**
+     * Update location
+     */
     public function update(Request $request, Location $location)
     {
         $request->validate([
@@ -48,6 +60,9 @@ class LocationController extends Controller
         return redirect()->route('locations.index')->with('success', 'Location updated successfully.');
     }
 
+    /**
+     * Delete location
+     */
     public function destroy(Location $location)
     {
         $location->delete();

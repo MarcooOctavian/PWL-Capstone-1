@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Schema;
 
 class TypeTicketController extends Controller
 {
+    /**
+     * Display all ticket types
+     */
     public function index()
     {
         if (auth()->user()->role == 1) {
@@ -18,6 +21,9 @@ class TypeTicketController extends Controller
         return view('admin.ticket_types.index', compact('events'));
     }
 
+    /**
+     * Create ticket type
+     */
     public function create(Request $request)
     {
         if (auth()->user()->role == 1) {
@@ -34,6 +40,9 @@ class TypeTicketController extends Controller
         return view('admin.ticket_types.create', compact('events','selectedEvent', 'schedules'));
     }
 
+    /**
+     * Store ticket type
+     */
     public function store(Request $request)
     {
         $event = \App\Models\Event::findOrFail($request->event_id);
@@ -70,6 +79,9 @@ class TypeTicketController extends Controller
         //
     }
 
+    /**
+     * Edit ticket type
+     */
     public function edit($id)
     {
         $ticketType = TypeTicket::findOrFail($id);
@@ -88,6 +100,9 @@ class TypeTicketController extends Controller
         return view('admin.ticket_types.edit', compact('ticketType', 'events', 'schedules'));
     }
 
+    /**
+     * Update ticket type
+     */
     public function update(Request $request, $id)
     {
         $ticketType = TypeTicket::findOrFail($id);
@@ -123,11 +138,13 @@ class TypeTicketController extends Controller
 
         $ticketType->update($data);
 
-        // OTOMATIS: Cek jika admin baru saja menambah stok
+        // Automatically check if admin just added stock
+        // Trigger waiting list notification if ticket stock was successfully replenished from zero
         if ($oldStock <= 0 && $ticketType->stock > 0) {
 
             $columnName = Schema::hasColumn('waiting_lists', 'type_ticket_id') ? 'type_ticket_id' : 'ticket_type_id';
 
+            // Find oldest users waiting in line up to the amount of new stock added
             $pengantre = \App\Models\WaitingList::where($columnName, $ticketType->id)
                 ->where('status', 'waiting')
                 ->orderBy('created_at', 'asc')
@@ -135,10 +152,10 @@ class TypeTicketController extends Controller
                 ->get();
 
             foreach ($pengantre as $orang) {
-                // 1. Ubah statusnya agar muncul di Profil User
+                // 1. Update status to notified
                 $orang->update(['status' => 'notified']);
 
-                // 2. 'Booking' stok tersebut agar tidak dibeli orang umum
+                // 2. 'Booking' stock so it's not bought by the general public
                 $ticketType->decrement('stock', 1);
             }
         }
@@ -146,6 +163,9 @@ class TypeTicketController extends Controller
         return redirect()->route('ticket-types.manage',$request->event_id)->with('success', 'Ticket Type updated successfully!');
     }
 
+    /**
+     * Delete ticket type
+     */
     public function destroy($id)
     {
         $ticketType = TypeTicket::findOrFail($id);
@@ -159,6 +179,9 @@ class TypeTicketController extends Controller
         return back()->with('success', 'Ticket Type deleted successfully!');
     }
 
+    /**
+     * Get ticket types by event
+     */
     public function byEvent($id)
     {
         $event = \App\Models\Event::findOrFail($id);

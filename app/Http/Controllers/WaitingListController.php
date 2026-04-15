@@ -28,6 +28,7 @@ class WaitingListController extends Controller
             'type_ticket_id' => 'required|exists:type_tickets,id',
         ]);
 
+        // Resolve ticket type column name dynamically to handle database schema variations
         $columnName = Schema::hasColumn('waiting_lists', 'type_ticket_id') ? 'type_ticket_id' : 'ticket_type_id';
 
         $alreadyWaiting = WaitingList::where('user_id', Auth::id())
@@ -63,10 +64,12 @@ class WaitingListController extends Controller
         return back()->with('success', 'Status antrean berhasil diperbarui.');
     }
 
-    // FUNGSI UNTUK USER MASUK ANTREAN WAITING LIST
+    /**
+     * User Join Waiting List Function
+     */
     public function join(Request $request)
     {
-        // 1. Validasi data
+        // 1. Input Validation
         $request->validate([
             'type_ticket_id' => 'required|exists:type_tickets,id',
             'name' => 'required|string',
@@ -75,7 +78,7 @@ class WaitingListController extends Controller
 
         $typeTicket = \App\Models\TypeTicket::findOrFail($request->type_ticket_id);
 
-        // 2. Siapkan data dasar
+        // 2. Prepare basic data
         $data = [
             'user_id' => auth()->id(),
             'name' => $request->name,
@@ -84,25 +87,29 @@ class WaitingListController extends Controller
             'status' => 'waiting'
         ];
 
-        // 3. LOGIKA PINTAR
+        // 3. Smart Logic
+        // Adjust array key based on actual database column name
         if (Schema::hasColumn('waiting_lists', 'type_ticket_id')) {
             $data['type_ticket_id'] = $typeTicket->id;
         } else {
             $data['ticket_type_id'] = $typeTicket->id;
         }
 
-        // 4. Eksekusi Simpan
+        // 4. Execute Save
         \App\Models\WaitingList::create($data);
 
-        // 5. Kembali dengan sukses
+        // 5. Return with success
         return redirect()->route('checkout.create')->with('success', 'Berhasil! Anda telah dimasukkan ke dalam antrean Waiting List. Kami akan menghubungi Anda via email jika ada tiket yang tersedia.');
     }
 
-    // FUNGSI: UNTUK USER MERESPON TAWARAN TIKET (ACCEPT/DECLINE)
+    /**
+     * User Respond to Ticket Offer Function (ACCEPT/DECLINE)
+     */
     public function respond(Request $request, $id)
     {
         $waitingList = WaitingList::findOrFail($id);
 
+        // Dynamically locate the correct column holding the ticket relationship
         $columnName = Schema::hasColumn('waiting_lists', 'type_ticket_id') ? 'type_ticket_id' : 'ticket_type_id';
         $ticketId = $waitingList->$columnName;
 
@@ -122,15 +129,16 @@ class WaitingListController extends Controller
                 ->with('success', 'Kuota berhasil diamankan! Silakan isi data diri dan selesaikan pembayaran untuk tiket ' . $typeTicket->name . '.');
         }
 
-        // JIKA USER KLIK DECLINE (TOLAK TIKET)
+        // IF USER CLICK DECLINE (DECLINE TICKET)
         if ($request->action == 'decline') {
-            // 1. Ubah status menjadi dibatalkan
+            // 1. Update status to canceled
             $waitingList->update(['status' => 'canceled']);
 
-            // 2. Kembalikan 1 stok yang tadi di-booking
+            // 2. Revert 1 stock that was booked
             $typeTicket->increment('stock', 1);
 
-            // 3. OTOMATIS MENCARI PENGGANTI (Auto Oper ke orang berikutnya)
+            // 3. Automatically search for replacement (Auto Oper to the next person)
+            // Query the next users in line waiting for this specific ticket type
             $nextInLine = WaitingList::where($columnName, $typeTicket->id)
                 ->where('status', 'waiting')
                 ->orderBy('created_at', 'asc')
