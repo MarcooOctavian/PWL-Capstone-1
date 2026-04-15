@@ -219,8 +219,15 @@
                 </div>
 
                 <div class="ticket-right">
-                    <div class="ticket-header">
+                    <div class="ticket-header" style="display: flex; justify-content: space-between; align-items: center;">
                         <h4 class="event-title">{{ strtoupper($ticket->typeTicket->event->title ?? 'Nama Event Belum Ditentukan') }}</h4>
+                        @if($ticket->status === 'valid')
+                            <span style="background-color: #28a745; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;">VALID</span>
+                        @elseif($ticket->status === 'used')
+                            <span style="background-color: #dc3545; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;">SUDAH DIGUNAKAN</span>
+                        @else
+                            <span style="background-color: #6c757d; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;">{{ strtoupper($ticket->status) }}</span>
+                        @endif
                     </div>
 
                     <div class="ticket-info-grid">

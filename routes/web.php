@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\OrganizerRequestController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisteredUserController;
@@ -167,7 +168,17 @@ Route::middleware(['auth', CheckUserStatus::class,RoleMiddleware::class])->group
     Route::get('/admin/waiting-list', [WaitingListController::class, 'index'])->name('admin.waiting-list.index');
     // 2. Rute untuk Admin mengubah status antrean
     Route::put('/admin/waiting-list/{waitingList}', [WaitingListController::class, 'update'])->name('waiting-list.update');
-    Route::put('/admin/waiting-list/{waitingList}', [WaitingListController::class, 'update'])->name('waiting-list.update');
+    // RUTE UPDATE STATUS
+    Route::patch('/users/{id}/status', [UserController::class, 'updateStatus'])
+        ->name('users.updateStatus');
+
+    //RUTE REQUEST ORGANIZER
+    Route::get('/admin/organizer-requests', [OrganizerRequestController::class, 'index'])
+        ->name('admin.organizer.requests');
+    Route::post('/admin/organizer-requests/{id}/approve', [OrganizerRequestController::class, 'approve'])
+        ->name('admin.organizer.approve');
+    Route::post('/admin/organizer-requests/{id}/reject', [OrganizerRequestController::class, 'reject'])
+        ->name('admin.organizer.reject');
 });
 // -----------------------
 
@@ -193,6 +204,12 @@ Route::middleware(['auth', CheckUserStatus::class])->group(function () {
     // Rute fallback untuk store lama (opsional jika masih dipakai)
     Route::post('/waiting-list', [WaitingListController::class, 'store'])->name('waiting-list.store');
 
+    // REQUEST ORGANIZER
+    Route::get('/organizer-request', [OrganizerRequestController::class, 'create'])
+        ->name('organizer.request');
+    Route::post('/organizer-request', [OrganizerRequestController::class, 'store'])
+        ->name('organizer.request.store');
+
     Route::get('/e-ticket/{id}', [TicketController::class, 'show'])->name('ticket.show');
 });
 
@@ -200,12 +217,14 @@ Route::middleware(['auth', CheckUserStatus::class])->group(function () {
 Route::middleware(['auth', CheckUserStatus::class])->group(function () {
     Route::get('/checkout', [TransactionController::class, 'create'])->name('checkout.create');
     Route::post('/checkout', [TransactionController::class, 'store'])->name('checkout.store');
-    Route::get('/checkout/payment', [TransactionController::class, 'payment'])->name('checkout.payment');
-    Route::post('/checkout/payment/process', [TransactionController::class, 'processPayment'])->name('checkout.payment.process');
+    Route::get('/checkout/payment/{id}', [TransactionController::class, 'payment'])->name('checkout.payment');
+    Route::post('/checkout/payment/{id}/process', [TransactionController::class, 'processPayment'])->name('checkout.payment.process');
+    Route::post('/checkout/payment/{id}/fail', [TransactionController::class, 'failPayment'])->name('checkout.payment.fail');
 
 });
 
-Route::get('/scan/{qr_code}', [TicketController::class, 'scanTicket']);
+Route::get('/scan/{qr_code}', [TicketController::class, 'scanTicket'])->name('ticket.scan');
+Route::post('/scan/{qr_code}/process', [TicketController::class, 'processScan'])->name('ticket.process_scan');
 
 Route::middleware(['auth', CheckUserStatus::class])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -215,17 +234,6 @@ Route::middleware(['auth', CheckUserStatus::class])->group(function () {
     // Exports
     Route::get('/export/excel', [App\Http\Controllers\ExportController::class, 'exportExcel'])->name('export.excel');
     Route::get('/export/pdf', [App\Http\Controllers\ExportController::class, 'exportPdf'])->name('export.pdf');
-});
-
-// GUEST USER
-Route::middleware('guest')->group(function () {
-    Route::get('/user-login', function () {
-        return view('user.login');
-    });
-
-    Route::get('/user-register', function () {
-        return view('user.register');
-    });
 });
 
 // PUBLIC

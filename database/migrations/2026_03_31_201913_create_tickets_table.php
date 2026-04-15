@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignId('type_ticket_id')->constrained('type_tickets')->cascadeOnDelete();
             $table->string('qr_code', 100);
             $table->string('status', 20)->default('valid');
-            $table->string('seat_number', 10)->nullable();
             $table->timestamps();
         });
     }

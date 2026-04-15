@@ -65,4 +65,26 @@ class TicketController extends Controller
 
         return back()->with('success', 'Tiket berhasil dibatalkan dan stok telah dikembalikan.');
     }
+
+    public function scanTicket($qr_code)
+    {
+        $ticket = Ticket::with(['transaction.user', 'typeTicket.event'])
+            ->where('qr_code', $qr_code)
+            ->firstOrFail();
+
+        return view('user.scan-result', compact('ticket'));
+    }
+
+    public function processScan(Request $request, $qr_code)
+    {
+        $ticket = Ticket::where('qr_code', $qr_code)->firstOrFail();
+        
+        if ($ticket->status !== 'valid') {
+            return back()->with('error', 'Tiket ini tidak valid atau sudah digunakan.');
+        }
+
+        $ticket->update(['status' => 'used']);
+
+        return back()->with('success', 'Check-In berhasil! Tiket telah digunakan.');
+    }
 }

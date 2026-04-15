@@ -20,7 +20,7 @@ class LocationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'venue_name' => 'required|string|max:100',
+            'venue_name' => 'required|string|max:100|unique:locations,venue_name',
             'address' => 'required|string|max:200',
             'city' => 'required|string|max:100',
             'maps_url' => 'nullable|string|max:200',
@@ -38,7 +38,7 @@ class LocationController extends Controller
     public function update(Request $request, Location $location)
     {
         $request->validate([
-            'venue_name' => 'required|string|max:100',
+            'venue_name' => 'required|string|max:100|unique:locations,venue_name,' . $location->id,
             'address' => 'required|string|max:200',
             'city' => 'required|string|max:100',
             'maps_url' => 'nullable|string|max:200',

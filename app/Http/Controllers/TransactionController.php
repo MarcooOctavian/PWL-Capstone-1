@@ -47,11 +47,19 @@ class TransactionController extends Controller
         $typeTicket = \App\Models\TypeTicket::findOrFail($request->type_ticket_id);
 
         // --- ERROR HANDLING LIMIT & STOK ---
-        if ($request->qty > $typeTicket->max_purchase) {
+        $userId = Auth::id() ?? 1;
+        $purchasedTicketsCount = \App\Models\Ticket::where('type_ticket_id', $typeTicket->id)
+            ->whereHas('transaction', function ($query) use ($userId) {
+                $query->where('user_id', $userId)
+                      ->whereIn('payment_status', ['paid', 'pending']);
+            })
+            ->count();
+
+        if (($purchasedTicketsCount + $request->qty) > $typeTicket->max_purchase) {
             return redirect()->route('checkout.create', [
                 'event_id' => $typeTicket->event_id
             ])->withInput()->withErrors([
-                'qty' => 'Mohon maaf, batas maksimal pembelian untuk tiket ' . $typeTicket->name . ' adalah ' . $typeTicket->max_purchase . ' tiket per transaksi.'
+                'qty' => 'Batas maksimal pembelian (' . $typeTicket->max_purchase . '). Anda sudah memiliki/memesan ' . $purchasedTicketsCount . ' tiket jenis ini.'
             ]);
         }
         if ($typeTicket->stock <= 0) {
@@ -80,60 +88,61 @@ class TransactionController extends Controller
         ];
         session()->put('checkout_data', $checkoutData);
 
-        // 3. Lempar ke halaman Pembayaran
-        return redirect()->route('checkout.payment');
-    }
-
-    // FUNGSI UNTUK MENAMPILKAN HALAMAN SIMULASI PEMBAYARAN
-    public function payment()
-    {
-        $checkoutData = session('checkout_data');
-        if (!$checkoutData) {
-            return redirect()->route('checkout.create')->with('error', 'Sesi pembayaran telah habis. Silakan ulangi pesanan Anda.');
-        }
-
-        return view('user.payment', compact('checkoutData'));
-    }
-
-    // FUNGSI UNTUK MENGEKSEKUSI PEMBAYARAN (Masuk DB, Potong Stok, Kirim Email)
-    public function processPayment(Request $request)
-    {
-        $checkoutData = session('checkout_data');
-        if (!$checkoutData) {
-            return redirect()->route('checkout.create')->with('error', 'Sesi pembayaran tidak valid.');
-        }
-
-        // Re-verify ticket
-        $typeTicket = \App\Models\TypeTicket::findOrFail($checkoutData['type_ticket_id']);
-
-        // 1. Create Transaction DB (Status Paid)
+        // 2.5 Simpan Transaction Database (Pending)
         $userId = Auth::id() ?? 1;
         $transaction = Transaction::create([
             'user_id' => $userId,
             'total_amount' => $checkoutData['total_amount'],
-            'payment_status' => 'paid',
+            'payment_status' => 'pending',
             'transaction_date' => now(),
         ]);
-
-        // 2. Generate Tickets
-        $firstTicketId = null;
-        for ($i = 0; $i < $checkoutData['qty']; $i++) {
+        
+        for ($i = 0; $i < $request->qty; $i++) {
             $ticketCode = 'TKT-' . strtoupper(Str::random(8));
-            $ticket = Ticket::create([
+            Ticket::create([
                 'transaction_id' => $transaction->id,
                 'type_ticket_id' => $typeTicket->id,
                 'qr_code' => $ticketCode,
-                'status' => 'valid',
-                'seat_number' => null,
+                'status' => 'unpaid',
             ]);
-            if ($i === 0) $firstTicketId = $ticket->id;
+        }
+        
+        $typeTicket->decrement('stock', $request->qty);
+
+        // 3. Lempar ke halaman Pembayaran
+        return redirect()->route('checkout.payment', $transaction->id);
+    }
+
+    // FUNGSI UNTUK MENAMPILKAN HALAMAN SIMULASI PEMBAYARAN
+    public function payment($id)
+    {
+        $transaction = Transaction::findOrFail($id);
+        $checkoutData = session('checkout_data');
+        
+        if (!$checkoutData || $transaction->payment_status !== 'pending') {
+            return redirect()->route('checkout.create')->with('error', 'Sesi pembayaran telah habis atau tidak valid. Silakan ulangi pesanan Anda.');
         }
 
-        // 3. Kurangi Stok
-        $typeTicket->decrement('stock', $checkoutData['qty']);
+        return view('user.payment', compact('checkoutData', 'transaction'));
+    }
 
-        // 4. Kirim Email
-        if ($transaction) {
+    // FUNGSI UNTUK MENGEKSEKUSI PEMBAYARAN (Update Status, Kirim Email)
+    public function processPayment(Request $request, $id)
+    {
+        $transaction = Transaction::findOrFail($id);
+        
+        if ($transaction->payment_status !== 'pending') {
+            return redirect()->route('home')->with('error', 'Transaksi sudah diproses sebelumnya.');
+        }
+
+        // 1. Update Transaction & Tickets
+        $transaction->update(['payment_status' => 'paid']);
+        $transaction->tickets()->update(['status' => 'valid']);
+
+        $checkoutData = session('checkout_data');
+
+        // 2. Kirim Email
+        if ($checkoutData) {
             $allTickets = Ticket::with(['typeTicket.event.location', 'transaction.user'])
                 ->where('transaction_id', $transaction->id)
                 ->get();
@@ -145,10 +154,33 @@ class TransactionController extends Controller
             }
         }
 
-        // 5. Bersihkan session
+        // 3. Bersihkan session
+        session()->forget('checkout_data');
+        $firstTicket = $transaction->tickets()->first();
+
+        return redirect()->route('ticket.show', $firstTicket->id)->with('success', 'Pembayaran Berhasil Diverifikasi! E-Ticket telah dikirim ke email Anda.');
+    }
+
+    // FUNGSI UNTUK TIME OUT ATAU GAGAL PEMBAYARAN
+    public function failPayment($id)
+    {
+        $transaction = Transaction::findOrFail($id);
+        
+        if ($transaction->payment_status === 'pending') {
+            $transaction->update(['payment_status' => 'failed']);
+            $transaction->tickets()->update(['status' => 'cancelled']);
+            
+            // Kembalikan Stok
+            $firstTicket = $transaction->tickets()->first();
+            if ($firstTicket) {
+                $typeTicket = $firstTicket->typeTicket;
+                $typeTicket->increment('stock', $transaction->tickets()->count());
+            }
+        }
+        
         session()->forget('checkout_data');
 
-        return redirect()->route('ticket.show', $firstTicketId)->with('success', 'Pembayaran Berhasil Diverifikasi! E-Ticket telah dikirim ke email Anda.');
+        return redirect()->route('events.public')->with('error', 'Waktu pembayaran telah habis atau dibatalkan. Transaksi dinyatakan GAGAL.');
     }
 
     /**

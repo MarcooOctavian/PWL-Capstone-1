@@ -61,4 +61,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Transaction::class);
     }
+
+    public function organizerRequests()
+    {
+        return $this->hasMany(OrganizerRequest::class);
+    }
 }

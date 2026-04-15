@@ -15,11 +15,25 @@
                 <div class="card-body">
                     <div class="form-group">
                         <label>Event</label>
-                        <select name="event_id" class="form-control">
+                        <select name="event_id" class="form-control" readonly>
                             @foreach($events as $event)
-                                <option value="{{ $event->id }}"
-                                    {{ isset($selectedEvent) && $selectedEvent == $event->id ? 'selected' : '' }}>
-                                    {{ $event->title }}
+                                @if(isset($selectedEvent) && $selectedEvent == $event->id)
+                                    <option value="{{ $event->id }}" selected>
+                                        {{ $event->title }}
+                                    </option>
+                                @endif
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Schedule</label>
+                        <select name="schedule_id" class="form-control" required>
+                            <option value="">-- Dropdown / Select Schedule --</option>
+                            @foreach($schedules as $schedule)
+                                <option value="{{ $schedule->id }}">
+                                    {{ \Carbon\Carbon::parse($schedule->start_time)->translatedFormat('d M Y, H:i') }}
+                                    - {{ \Carbon\Carbon::parse($schedule->end_time)->translatedFormat('H:i') }}
                                 </option>
                             @endforeach
                         </select>

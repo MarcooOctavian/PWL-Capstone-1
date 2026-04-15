@@ -35,7 +35,7 @@ class EventController extends Controller
     {
         abort_if(auth()->user()->role != 1, 403, 'Akses ditolak');
         $request->validate([
-            'title' => 'required|string|max:200',
+            'title' => 'required|string|max:200|unique:events,title',
             'category_id' => 'required|exists:categories,id',
             'location_id' => 'required|exists:locations,id',
             'organizer_id' => 'required|exists:users,id',
@@ -74,7 +74,7 @@ class EventController extends Controller
         }
 
         $rules = [
-            'title' => 'required|string|max:200',
+            'title' => 'required|string|max:200|unique:events,title,' . $event->id,
             'category_id' => 'required|exists:categories,id',
             'location_id' => 'required|exists:locations,id',
             'date' => 'required|date',

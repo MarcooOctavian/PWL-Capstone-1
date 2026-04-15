@@ -54,6 +54,8 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'email' => 'required|email|exists:users,email'
+        ], [
+            'email.exists' => 'These credentials do not match our records.'
         ]);
 
         return redirect()->route('admin.recover-password', [

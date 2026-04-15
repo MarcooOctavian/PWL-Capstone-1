@@ -47,10 +47,16 @@
                             <div class="text-center mt-4">
                                 <p style="font-size: 12px; color: #999; margin-bottom: 15px;">*Pastikan Anda sudah melakukan transfer sebelum menekan tombol di bawah.</p>
 
-                                <form id="payment-form" action="{{ route('checkout.payment.process') }}" method="POST">
+                                <form id="payment-form" action="{{ route('checkout.payment.process', $transaction->id) }}" method="POST">
                                     @csrf
-                                    <button type="submit" class="site-btn" style="width: 100%; border-radius: 4px; font-size: 16px; padding: 15px 0; background-color: #007bff; border: none; color: white; cursor: pointer; transition: 0.3s;">
-                                        Saya Sudah Bayar
+                                    <button type="submit" class="site-btn" style="width: 100%; border-radius: 4px; font-size: 16px; padding: 15px 0; background-color: #28a745; border: none; color: white; cursor: pointer; transition: 0.3s;">
+                                        Simulasikan Pembayaran Berhasil
+                                    </button>
+                                </form>
+                                <form id="payment-fail-form" action="{{ route('checkout.payment.fail', $transaction->id) }}" method="POST" style="margin-top: 15px;">
+                                    @csrf
+                                    <button type="submit" class="site-btn" style="width: 100%; border-radius: 4px; font-size: 16px; padding: 15px 0; background-color: #dc3545; border: none; color: white; cursor: pointer; transition: 0.3s;">
+                                        Simulasikan Timeout/Gagal
                                     </button>
                                 </form>
                             </div>
@@ -79,8 +85,8 @@
 
             if (--timeInSeconds < 0) {
                 clearInterval(timer);
-                alert("Waktu pembayaran Anda telah habis. Silakan lakukan pemesanan ulang.");
-                window.location.href = "{{ url('/home') }}";
+                alert("Waktu pembayaran Anda telah habis. Transaksi dibatalkan secara otomatis.");
+                document.getElementById('payment-fail-form').submit();
             }
         }, 1000);
     </script>

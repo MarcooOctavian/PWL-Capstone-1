@@ -75,8 +75,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
           <!-- View Front Page -->
           <li class="nav-item">
-            <a href="{{ route('home') }}" class="nav-link" target="_blank" rel="noopener noreferrer">
-              <i class="nav-icon fas fa-globe"></i>
+            <a href="{{ route('home') }}" class="nav-link">
+                <i class="nav-icon fas fa-external-link-alt text-info"></i>
               <p>View Front Page</p>
             </a>
           </li>
@@ -140,6 +140,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
             </li>
             @endif
+
+            <li class="nav-item">
+                <a href="{{ route('admin.organizer.requests') }}" class="nav-link">
+                    <i class="nav-icon fas fa-user-plus"></i>
+                    <p>Organizer Requests</p>
+                </a>
+            </li>
 
             @else
                 <!-- Reactivate Account -->

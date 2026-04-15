@@ -12,6 +12,7 @@ class TypeTicket extends Model
 
     protected $fillable = [
         'event_id',
+        'schedule_id',
         'name',
         'price',
         'stock',
@@ -21,6 +22,11 @@ class TypeTicket extends Model
     public function event()
     {
         return $this->belongsTo(Event::class)->withTrashed();
+    }
+
+    public function schedule()
+    {
+        return $this->belongsTo(Schedule::class)->withTrashed();
     }
 
     public function tickets()
