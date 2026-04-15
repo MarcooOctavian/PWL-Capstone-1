@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\OrganizerRequestController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisteredUserController;
@@ -142,6 +143,14 @@ Route::middleware(['auth', CheckUserStatus::class,RoleMiddleware::class])->group
     // RUTE UPDATE STATUS
     Route::patch('/users/{id}/status', [UserController::class, 'updateStatus'])
         ->name('users.updateStatus');
+
+    //RUTE REQUEST ORGANIZER
+    Route::get('/admin/organizer-requests', [OrganizerRequestController::class, 'index'])
+        ->name('admin.organizer.requests');
+    Route::post('/admin/organizer-requests/{id}/approve', [OrganizerRequestController::class, 'approve'])
+        ->name('admin.organizer.approve');
+    Route::post('/admin/organizer-requests/{id}/reject', [OrganizerRequestController::class, 'reject'])
+        ->name('admin.organizer.reject');
 });
 // -----------------------
 
@@ -166,6 +175,12 @@ Route::middleware(['auth', CheckUserStatus::class])->group(function () {
     Route::post('/waiting-list/respond/{id}', [WaitingListController::class, 'respond'])->name('waiting-list.respond');
     // Rute fallback untuk store lama (opsional jika masih dipakai)
     Route::post('/waiting-list', [WaitingListController::class, 'store'])->name('waiting-list.store');
+
+    // REQUEST ORGANIZER
+    Route::get('/organizer-request', [OrganizerRequestController::class, 'create'])
+        ->name('organizer.request');
+    Route::post('/organizer-request', [OrganizerRequestController::class, 'store'])
+        ->name('organizer.request.store');
 
     Route::get('/e-ticket/{id}', [TicketController::class, 'show'])->name('ticket.show');
 });

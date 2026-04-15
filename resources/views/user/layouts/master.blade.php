@@ -36,6 +36,15 @@
                 <ul>
                     <li class="{{ request()->is('/') || request()->is('home') ? 'active' : '' }}"><a href="/">Home</a></li>
                     <li class="{{ request()->is('events*') ? 'active' : '' }}"><a href="{{ route('events.public') }}">Events</a></li>
+                    @auth
+                        @if(auth()->user()->role == 3)
+                            <li class="{{ request()->is('organizer-request*') ? 'active' : '' }}">
+                                <a href="{{ route('organizer.request') }}">
+                                    Jadi Organizer
+                                </a>
+                            </li>
+                        @endif
+                    @endauth
                 </ul>
             </nav>
             @guest

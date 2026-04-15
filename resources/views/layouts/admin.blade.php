@@ -127,6 +127,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
             </li>
 
+            <li class="nav-item">
+                <a href="{{ route('admin.organizer.requests') }}" class="nav-link">
+                    <i class="nav-icon fas fa-user-plus"></i>
+                    <p>Organizer Requests</p>
+                </a>
+            </li>
+
             @else
                 <!-- Reactivate Account -->
                 <li class="nav-item">
