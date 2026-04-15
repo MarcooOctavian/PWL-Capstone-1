@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AdminLTE 3 | Log in</title>
+  <title>Tickify | Log-in</title>
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <link rel="stylesheet" href="{{ asset('adminlte/plugins/fontawesome-free/css/all.min.css') }}">
@@ -18,7 +18,7 @@
 @endif
 <div class="login-box">
   <div class="login-logo">
-    <a href="/"><b>Admin</b>LTE</a>
+    <a href="/"><b>Tickify</b></a>
   </div>
   <div class="card">
     <div class="card-body login-card-body">
@@ -63,16 +63,7 @@
           </div>
         </div>
       </form>
-
-      <div class="social-auth-links text-center mb-3">
-        <p>- OR -</p>
-        <a href="#" class="btn btn-block btn-primary">
-          <i class="fab fa-facebook mr-2"></i> Sign in using Facebook
-        </a>
-        <a href="#" class="btn btn-block btn-danger">
-          <i class="fab fa-google-plus mr-2"></i> Sign in using Google+
-        </a>
-      </div>
+        
       <p class="mb-1">
         <a href="{{ route('admin.forgot-password') }}">I forgot my password</a>
       </p>

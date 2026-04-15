@@ -206,17 +206,6 @@ Route::middleware(['auth', CheckUserStatus::class])->group(function () {
     Route::get('/export/pdf', [App\Http\Controllers\ExportController::class, 'exportPdf'])->name('export.pdf');
 });
 
-// GUEST USER
-Route::middleware('guest')->group(function () {
-    Route::get('/user-login', function () {
-        return view('user.login');
-    });
-
-    Route::get('/user-register', function () {
-        return view('user.register');
-    });
-});
-
 // PUBLIC
 Route::get('/events', [EventController::class, 'publicIndex'])->name('events.public');
 Route::get('/events/{id}', [EventController::class, 'show'])->name('events.show.public');
