@@ -50,13 +50,13 @@
                                 <form id="payment-form" action="{{ route('checkout.payment.process', $transaction->id) }}" method="POST">
                                     @csrf
                                     <button type="submit" class="site-btn" style="width: 100%; border-radius: 4px; font-size: 16px; padding: 15px 0; background-color: #28a745; border: none; color: white; cursor: pointer; transition: 0.3s;">
-                                        Simulasikan Pembayaran Berhasil
+                                        Bayar Sekarang
                                     </button>
                                 </form>
                                 <form id="payment-fail-form" action="{{ route('checkout.payment.fail', $transaction->id) }}" method="POST" style="margin-top: 15px;">
                                     @csrf
                                     <button type="submit" class="site-btn" style="width: 100%; border-radius: 4px; font-size: 16px; padding: 15px 0; background-color: #dc3545; border: none; color: white; cursor: pointer; transition: 0.3s;">
-                                        Simulasikan Timeout/Gagal
+                                        Batalkan Transaksi
                                     </button>
                                 </form>
                             </div>
