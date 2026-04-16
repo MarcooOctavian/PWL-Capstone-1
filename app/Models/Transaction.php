@@ -16,11 +16,17 @@ class Transaction extends Model
         'transaction_date',
     ];
 
+    /**
+     * Get the user that owns the transaction.
+     */
     public function user()
     {
         return $this->belongsTo(User::class)->withTrashed();
     }
 
+    /**
+     * Get the tickets for the transaction.
+     */
     public function tickets()
     {
         return $this->hasMany(Ticket::class);

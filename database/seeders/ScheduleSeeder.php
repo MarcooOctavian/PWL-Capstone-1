@@ -8,6 +8,9 @@ use Illuminate\Database\Seeder;
 
 class ScheduleSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
         // Each event gets 1-2 schedules; location reused from the event's own location

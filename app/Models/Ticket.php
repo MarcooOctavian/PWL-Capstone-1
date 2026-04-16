@@ -17,11 +17,17 @@ class Ticket extends Model
         'seat_number',
     ];
 
+    /**
+     * Get the transaction that owns the ticket.
+     */
     public function transaction()
     {
         return $this->belongsTo(Transaction::class);
     }
 
+    /**
+     * Get the ticket type associated with the ticket.
+     */
     public function typeTicket()
     {
         return $this->belongsTo(TypeTicket::class)->withTrashed();

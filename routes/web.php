@@ -17,8 +17,9 @@ use App\Http\Controllers\TicketController;
 use App\Http\Middleware\CheckUserStatus;
 use App\Http\Controllers\EventController;
 
-// DEFAULT ROUTE
+// Default public homepage route
 Route::get('/', function () {
+    // Fetch upcoming events that are scheduled for today or in the future
     $events = Event::where(function ($query) {
             $query->where('status', 'Upcoming')
                 ->orWhere('status', 'upcoming');
@@ -27,6 +28,7 @@ Route::get('/', function () {
         ->latest('date')
         ->get();
 
+    // Fetch the very next upcoming event to display in the countdown banner
     $nextEvent = Event::where(function ($query) {
             $query->where('status', 'Upcoming')
                 ->orWhere('status', 'upcoming');
@@ -35,6 +37,7 @@ Route::get('/', function () {
         ->orderBy('date', 'asc')
         ->first();
 
+    // Format the date for JavaScript countdown script compatibility
     $countdownTarget = $nextEvent
         ? \Carbon\Carbon::parse($nextEvent->date)->format('Y/m/d')
         : null;
@@ -80,8 +83,9 @@ Route::post('/reactivate', [UserController::class, 'reactivate'])
 
 // ADMIN PANEL (ROLE 1 & 2)
 Route::middleware(['auth', CheckUserStatus::class,RoleMiddleware::class])->group(function () {
-    // Dashboard
+    // Admin Dashboard Route
     Route::get('/panel', function () {
+        // Determine the time limit for data aggregation based on user selection
         $range = request('range', '7days');
         $startDate = \Carbon\Carbon::now();
 
@@ -93,6 +97,7 @@ Route::middleware(['auth', CheckUserStatus::class,RoleMiddleware::class])->group
         }
 
         // 1. DATA: GRAFIK TRANSAKSI (Line Chart)
+        // Aggregate total revenue on a daily basis
         $dailySales = Transaction::where('payment_status', 'paid')
             ->where('transaction_date', '>=', $startDate)
             ->selectRaw('DATE(transaction_date) as date, SUM(total_amount) as total_revenue')
@@ -101,6 +106,7 @@ Route::middleware(['auth', CheckUserStatus::class,RoleMiddleware::class])->group
         $revenues = $dailySales->pluck('total_revenue');
 
         // 2. DATA: EVENT PERFORMANCE (Bar Chart - Tiket laku per event)
+        // Count total valid tickets sold mapped to each event
         $events = Event::withCount(['tickets' => function($q) use ($startDate) {
             $q->whereHas('transaction', function($t) use ($startDate) {
                 $t->where('payment_status', 'paid')->where('transaction_date', '>=', $startDate);
@@ -110,6 +116,7 @@ Route::middleware(['auth', CheckUserStatus::class,RoleMiddleware::class])->group
         $eventData = $events->pluck('tickets_count');
 
         // 3. DATA: STATISTIK PENJUALAN (Doughnut Chart - Perbandingan Jenis Tiket)
+        // Count total valid tickets sold mapped to each ticket category type
         $ticketTypes = TypeTicket::withCount(['tickets' => function($q) use ($startDate) {
             $q->whereHas('transaction', function($t) use ($startDate) {
                 $t->where('payment_status', 'paid')->where('transaction_date', '>=', $startDate);
@@ -118,7 +125,8 @@ Route::middleware(['auth', CheckUserStatus::class,RoleMiddleware::class])->group
         $typeLabels = $ticketTypes->pluck('name');
         $typeData = $ticketTypes->pluck('tickets_count');
 
-        // METRICS KOTAK ATAS
+        // Upper box metrics
+        // Collect totals for top summary cards
         $metrics = [
             'events_count' => Event::count(),
             'types_count' => TypeTicket::count(),
@@ -129,13 +137,14 @@ Route::middleware(['auth', CheckUserStatus::class,RoleMiddleware::class])->group
                 ->where('transaction_date', '>=', $startDate)->sum('total_amount'),
         ];
 
+        // Fetch recent activities for quick overview
         $latestTransactions = Transaction::with('user')->latest()->take(5)->get();
         $soldTickets = Ticket::with(['transaction.user', 'typeTicket.event'])->latest()->take(10)->get();
 
         return view('admin.dashboard', compact(
             'latestTransactions', 'soldTickets', 'metrics',
             'dates', 'revenues', 'range',
-            'eventLabels', 'eventData', 'typeLabels', 'typeData' // <- Data baru untuk grafik
+            'eventLabels', 'eventData', 'typeLabels', 'typeData' // <- new data for charts
         ));
     })->middleware(['auth', 'verified'])->name('dashboard');
     // ADMIN ONLY ROUTES
@@ -163,16 +172,16 @@ Route::middleware(['auth', CheckUserStatus::class,RoleMiddleware::class])->group
     Route::resource('ticket-types', App\Http\Controllers\TypeTicketController::class);
     Route::get('/ticket-types/event/{id}', [TypeTicketController::class, 'byEvent'])->name('ticket-types.manage');
 
-    // RUTE WAITING LIST
-    // 1. Rute untuk Admin melihat daftar antrean
+    // WAITING LIST ROUTES
+    // 1. Route for Admin to view waiting list
     Route::get('/admin/waiting-list', [WaitingListController::class, 'index'])->name('admin.waiting-list.index');
-    // 2. Rute untuk Admin mengubah status antrean
+    // 2. Route for Admin to update waiting list status
     Route::put('/admin/waiting-list/{waitingList}', [WaitingListController::class, 'update'])->name('waiting-list.update');
-    // RUTE UPDATE STATUS
+    // UPDATE STATUS ROUTE
     Route::patch('/users/{id}/status', [UserController::class, 'updateStatus'])
         ->name('users.updateStatus');
 
-    //RUTE REQUEST ORGANIZER
+    // ORGANIZER REQUEST ROUTES
     Route::get('/admin/organizer-requests', [OrganizerRequestController::class, 'index'])
         ->name('admin.organizer.requests');
     Route::post('/admin/organizer-requests/{id}/approve', [OrganizerRequestController::class, 'approve'])
@@ -197,11 +206,11 @@ Route::middleware(['auth', CheckUserStatus::class])->group(function () {
         return view('user.profile', compact('transactions'));
     });
 
-    // 3. Rute untuk user mendaftar ke Waiting List (Dari halaman checkout)
+    // 3. Route for user to join waiting list (From checkout page)
     Route::post('/waiting-list/join', [WaitingListController::class, 'join'])->name('waiting-list.join');
-    // 4. Rute untuk user merespon notif (Terima/Tolak kuota)
+    // 4. Route for user to respond to notification (Accept/Reject quota)
     Route::post('/waiting-list/respond/{id}', [WaitingListController::class, 'respond'])->name('waiting-list.respond');
-    // Rute fallback untuk store lama (opsional jika masih dipakai)
+    // Fallback route for old store (optional if still used)
     Route::post('/waiting-list', [WaitingListController::class, 'store'])->name('waiting-list.store');
 
     // REQUEST ORGANIZER

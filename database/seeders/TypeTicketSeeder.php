@@ -9,6 +9,9 @@ use Illuminate\Database\Seeder;
 
 class TypeTicketSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
         // Ticket types keyed by event title.

@@ -57,11 +57,17 @@ class User extends Authenticatable
         'last_login_at' => 'datetime',
     ];
 
+    /**
+     * Get the user's transactions.
+     */
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
     }
 
+    /**
+     * Get the user's organizer requests.
+     */
     public function organizerRequests()
     {
         return $this->hasMany(OrganizerRequest::class);

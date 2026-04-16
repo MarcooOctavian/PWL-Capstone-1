@@ -12,6 +12,9 @@ use Illuminate\Support\Str;
 
 class TransactionSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
         // Only seed transactions for regular users (role '3')

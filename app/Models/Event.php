@@ -21,26 +21,41 @@ class Event extends Model
         'status',
     ];
 
+    /**
+     * Get the organizer that owns the event.
+     */
     public function organizer()
     {
         return $this->belongsTo(User::class, 'organizer_id')->withTrashed();
     }
 
+    /**
+     * Get the category associated with the event.
+     */
     public function category()
     {
         return $this->belongsTo(Category::class)->withTrashed();
     }
 
+    /**
+     * Get the location for the event.
+     */
     public function location()
     {
         return $this->belongsTo(Location::class)->withTrashed();
     }
 
+    /**
+     * Get the schedules for the event.
+     */
     public function schedules()
     {
         return $this->hasMany(Schedule::class);
     }
 
+    /**
+     * Get the ticket types associated with the event.
+     */
     public function typeTickets()
     {
         return $this->hasMany(TypeTicket::class);

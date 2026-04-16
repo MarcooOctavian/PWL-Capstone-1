@@ -17,11 +17,17 @@ class Schedule extends Model
         'end_time',
     ];
 
+    /**
+     * Get the event that owns the schedule.
+     */
     public function event()
     {
         return $this->belongsTo(Event::class)->withTrashed();
     }
 
+    /**
+     * Get the location that owns the schedule.
+     */
     public function location()
     {
         return $this->belongsTo(Location::class)->withTrashed();

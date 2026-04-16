@@ -12,6 +12,9 @@ use Carbon\Carbon;
 
 class DummyTransactionSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run()
     {
         $user = User::first();

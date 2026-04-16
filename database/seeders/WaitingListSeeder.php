@@ -10,6 +10,9 @@ use Illuminate\Database\Seeder;
 
 class WaitingListSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
         $users = User::where('role', '3')->get();

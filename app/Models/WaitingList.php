@@ -18,16 +18,25 @@ class WaitingList extends Model
         'status',
     ];
 
+    /**
+     * Get the user that owns the waiting list.
+     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * Get the event that owns the waiting list.
+     */
     public function event()
     {
         return $this->belongsTo(Event::class);
     }
 
+    /**
+     * Get the ticket type that owns the waiting list.
+     */
     public function ticketType()
     {
         return $this->belongsTo(TypeTicket::class, 'ticket_type_id');

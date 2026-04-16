@@ -107,6 +107,7 @@ class TransactionController extends Controller
             'transaction_date' => now(),
         ]);
         
+        // Generate individual tickets with unique QR codes for the requested quantity
         for ($i = 0; $i < $request->qty; $i++) {
             $ticketCode = 'TKT-' . strtoupper(Str::random(8));
             Ticket::create([
@@ -119,7 +120,7 @@ class TransactionController extends Controller
         
         $typeTicket->decrement('stock', $request->qty);
 
-        // 3. Lempar ke halaman Pembayaran
+        // Redirect to payment simulation page to complete the transaction
         return redirect()->route('checkout.payment', $transaction->id);
     }
 
