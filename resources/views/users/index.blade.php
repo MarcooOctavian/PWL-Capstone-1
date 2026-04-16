@@ -5,6 +5,7 @@
 @section('content')
     <div class="row">
         <div class="col-12">
+            <!-- Success Message -->
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show">
                     {{ session('success') }}
@@ -12,12 +13,15 @@
                 </div>
             @endif
 
+            <!-- Error Message -->
             @if(session('error'))
                 <div class="alert alert-danger alert-dismissible fade show">
                     {{ session('error') }}
                     <button type="button" class="close" data-dismiss="alert">&times;</button>
                 </div>
             @endif
+
+            <!-- User Management Card -->
             <div class="card card-primary card-outline">
                 <div class="card-header">
                     <h3 class="card-title">User Management</h3>

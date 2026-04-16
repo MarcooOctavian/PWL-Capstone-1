@@ -10,6 +10,7 @@
                     <h3 class="card-title">Add New User</h3>
                 </div>
 
+                <!-- Add User Form -->
                 <form action="{{ route('users.store') }}" method="POST">
                     @csrf
                     <div class="card-body">

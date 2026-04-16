@@ -5,6 +5,7 @@
 @section('content')
     <div class="row">
         <div class="col-12">
+            <!-- Session Messages -->
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show">
                     {{ session('success') }}
@@ -13,12 +14,14 @@
             @endif
 
             <div class="card card-primary card-outline">
+                <!-- Event Title & Add Ticket Type Button Conditional -->
                 <div class="card-header">
                     <h3 class="card-title">Ticket Types Management - {{ $event->title }}</h3>
                     <div class="card-tools">
                         <a href="{{ route('ticket-types.index') }}" class="btn btn-sm btn-secondary">
                             Back
                         </a>
+                        <!-- Add Ticket Type Access Conditional -->
                         @if(Auth::check() && Auth::user()->role != 3 && strtolower($event->status) !== 'completed')
                         <a href="{{ route('ticket-types.create') }}?event_id={{ $event->id }}"
                            class="btn btn-sm btn-primary">
@@ -29,6 +32,7 @@
                 </div>
 
                 <div class="card-body p-4">
+                    <!-- Schedules Iteration -->
                     @foreach($schedules as $schedule)
                         <div class="mb-4">
                             <h5>
@@ -54,6 +58,7 @@
                                     @php
                                         $scheduleTickets = $ticketTypes->where('schedule_id', $schedule->id);
                                     @endphp
+                                    <!-- Schedule Tickets Iteration -->
                                     @foreach($scheduleTickets as $tt)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>

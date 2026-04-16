@@ -23,6 +23,7 @@
                         </tr>
                         </thead>
                         <tbody>
+                        <!-- Organizer Requests Loop -->
                         @foreach($requests as $req)
                             <tr>
                                 <td>{{ $req->id }}</td>
@@ -31,6 +32,7 @@
                                 <td>{{ $req->reason }}</td>
 
                                 <td>
+                                    <!-- Status Rendering Conditional -->
                                     @if($req->status == 'pending')
                                         <span class="badge badge-warning">Pending</span>
                                     @elseif($req->status == 'approved')
@@ -41,6 +43,7 @@
                                 </td>
 
                                 <td>
+                                    <!-- Approval/Rejection Actions Conditional -->
                                     @if($req->status == 'pending')
                                         <form action="{{ route('admin.organizer.approve', $req->id) }}" method="POST" class="d-inline">
                                             @csrf

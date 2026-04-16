@@ -30,6 +30,7 @@
                         </thead>
 
                         <tbody>
+                        <!-- Events Iteration -->
                         @foreach($events as $event)
                             <tr>
                                 <td>{{ $event->title }}</td>

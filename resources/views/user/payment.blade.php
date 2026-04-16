@@ -21,6 +21,7 @@
                             </div>
 
                             <div class="text-center" style="margin-bottom: 30px;">
+                                <!-- Payment Specific Methods Rendering -->
                                 @if($checkoutData['payment_method'] == 'qris')
                                     <h4 style="color: #111; margin-bottom: 15px;">Scan QRIS di Bawah Ini</h4>
                                     <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" alt="QRIS Dummy" style="width: 200px; height: 200px; border: 2px solid #eee; padding: 10px; border-radius: 8px;">
@@ -70,7 +71,7 @@
     </section>
 
     <script>
-        // Set waktu 5 menit
+        // Set timer for 5 minutes
         let timeInSeconds = 5 * 60;
         let display = document.getElementById('countdown-timer');
 

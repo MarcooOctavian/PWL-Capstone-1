@@ -207,6 +207,7 @@
             <p>Tunjukkan E-Ticket ini saat melakukan registrasi ulang di lokasi acara.</p>
         </div>
 
+        <!-- User Tickets Iteration -->
         @foreach($allTickets as $ticket)
             <div class="ticket-card mx-auto">
                 <div class="ticket-left">
@@ -231,13 +232,13 @@
                     </div>
 
                     <div class="ticket-info-grid">
-                        <!-- NAMA PEMESAN -->
+                        <!-- Buyer Name -->
                         <div class="info-item">
                             <span class="info-label">Nama Pemesan</span>
                             <span class="info-value">{{ $ticket->transaction->user->name ?? 'Guest' }}</span>
                         </div>
                         
-                        <!-- KODE TIKET Format TCK-0001 -->
+                        <!-- Ticket Code Format: TCK-0001 -->
                         <div class="info-item">
                             <span class="info-label">Kode Tiket</span>
                             <span class="info-value" style="color: #f1592a;">
@@ -245,7 +246,7 @@
                             </span>
                         </div>
 
-                        <!-- TANGGAL & WAKTU -->
+                        <!-- Event Date & Time -->
                         <div class="info-item">
                             <span class="info-label">Tanggal Acara</span>
                             <span class="info-value">
@@ -253,7 +254,7 @@
                             </span>
                         </div>
 
-                        <!-- LOKASI -->
+                        <!-- Event Location -->
                         <div class="info-item">
                             <span class="info-label">Lokasi</span>
                             <span class="info-value">

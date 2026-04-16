@@ -8,6 +8,7 @@
     <div class="card card-success card-outline">
       <div class="card-header">
         <h3 class="card-title">Event Listings</h3>
+        <!-- Create Event Permission Conditional -->
         @if(Auth::check() && Auth::user()->role != 3)
         <div class="card-tools">
           <a href="{{ route('admin.events.create') }}" class="btn btn-sm btn-success">
@@ -32,6 +33,7 @@
             </tr>
           </thead>
           <tbody>
+            <!-- Events Iteration -->
             @foreach($events as $event)
             <tr>
               <td>{{ $event->organizer->name ?? 'N/A' }}</td>

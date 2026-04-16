@@ -25,6 +25,7 @@
                     <div class="counter-text">
                         <span>
                             Jadwal Terdekat
+                            <!-- Next Event Name Conditional -->
                             @if(!empty($nextEvent))
                                 : {{ $nextEvent->title }}
                             @endif

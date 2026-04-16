@@ -128,6 +128,7 @@
                         </tr>
                         </thead>
                         <tbody>
+                        <!-- Latest Transactions Loop -->
                         @foreach($latestTransactions as $trx)
                             <tr>
                                 <td>{{ $trx->user->name ?? 'Guest' }}</td>
@@ -161,6 +162,7 @@
                         </tr>
                         </thead>
                         <tbody>
+                        <!-- Recently Sold Tickets Loop -->
                         @foreach($soldTickets as $ticket)
                             <tr>
                                 <td>
@@ -186,7 +188,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
 
-            // 1. Grafik Transaksi (Line Chart)
+            // 1. Transaction Line Chart Initialization
             const ctxSales = document.getElementById('salesChart').getContext('2d');
             new Chart(ctxSales, {
                 type: 'line',
@@ -211,7 +213,7 @@
                 }
             });
 
-            // 2. Statistik Penjualan by Ticket Type (Doughnut Chart)
+            // 2. Sales Statistics by Ticket Type Doughnut Chart
             const ctxType = document.getElementById('ticketTypeChart').getContext('2d');
             new Chart(ctxType, {
                 type: 'doughnut',
@@ -232,7 +234,7 @@
                 }
             });
 
-            // 3. Event Performance Analytics (Bar Chart)
+            // 3. Event Performance Analytics Bar Chart
             const ctxEvent = document.getElementById('eventPerformanceChart').getContext('2d');
             new Chart(ctxEvent, {
                 type: 'bar',

@@ -32,6 +32,7 @@
             </div>
 
             <div class="row">
+                <!-- Events Iteration -->
                 @foreach($events as $event)
                     <div class="col-lg-12 mb-4">
                         <div class="speaker-item">
@@ -54,7 +55,7 @@
                                             <span>{{ $event->date }}</span>
                                         </div>
 
-                                        <!-- database description -->
+                                        <!-- Database Description -->
                                         <p style="color: #555; line-height: 1.7; margin-top: 10px;">
                                             {{ $event->description ?? 'Event ini merupakan kesempatan luar biasa untuk belajar, berjejaring, dan mendapatkan pengalaman baru. Bergabunglah bersama ratusan peserta lainnya dalam acara yang dikurasi secara profesional. Jangan lewatkan — tiket terbatas!' }}
                                         </p>

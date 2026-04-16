@@ -10,6 +10,7 @@
                         <p>Silakan lengkapi detail pesanan dan data diri Anda di bawah ini.</p>
                     </div>
 
+                    <!-- Error Messages Display -->
                     @if ($errors->any())
                         <div style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #f5c6cb;">
                             <strong>Transaksi Gagal!</strong>
@@ -62,6 +63,7 @@
                             <select name="schedule_id" required
                                     style="width: 100%; height: 50px; margin-bottom: 20px; padding: 0 20px; border: 1px solid #e1e1e1; border-radius: 4px; font-size: 16px;">
                                 <option value="">-- Pilih Jadwal Event --</option>
+                                <!-- Schedules Iteration -->
                                 @foreach($schedules as $schedule)
                                     <option value="{{ $schedule->id }}" {{ old('schedule_id') == $schedule->id ? 'selected' : '' }}>
                                         {{ \Carbon\Carbon::parse($event->date)->format('d M Y') }}
@@ -79,6 +81,7 @@
                                     style="width: 100%; height: 50px; margin-bottom: 20px; padding-left: 20px; border: 1px solid #e1e1e1; border-radius: 4px;">
 
                                 <option value="">-- Pilih Jenis Tiket --</option>
+                                <!-- Ticket Types Iteration -->
                                 @foreach($typeTickets as $type)
                                     <option
                                         value="{{ $type->id }}"
@@ -147,12 +150,12 @@
             }
         });
 
-        // LOGIKA JAVASCRIPT UNTUK MENGISI DROPDOWN QTY
+        // JavaScript Logic to Populate Qty Dropdown
         document.getElementById('ticket_select').addEventListener('change', function() {
             var selectedOption = this.options[this.selectedIndex];
             var qtySelect = document.getElementById('qty_select');
 
-            // Kosongkan qty select sebelumnya
+            // Clear previously selected qty
             qtySelect.innerHTML = '<option value="">-- Pilih Jumlah Tiket --</option>';
 
             if (!selectedOption.value) return;
@@ -161,14 +164,14 @@
             var stock = parseInt(selectedOption.getAttribute('data-stock'));
 
             if (stock <= 0) {
-                // Jika habis, munculkan angka 1 untuk bypass ke form error
+                // If sold out, show 1 to bypass to form error validation
                 var opt = document.createElement('option');
                 opt.value = 1;
                 opt.text = "1 (Daftar Waiting List)";
                 qtySelect.appendChild(opt);
                 qtySelect.value = 1; // Auto select
             } else {
-                // Jika ada stok, hitung batas maksimal yang bisa dibeli
+                // If stock available, calculate maximum limit
                 var limit = Math.min(maxPurchase, stock);
                 for (var i = 1; i <= limit; i++) {
                     var opt = document.createElement('option');
@@ -178,7 +181,7 @@
                 }
             }
 
-            // Mengembalikan old value jika form gagal dan reload
+            // Preserve old value if form fails and reloads
             var oldQty = "{{ old('qty') }}";
             if (oldQty && oldQty <= (stock <= 0 ? 1 : Math.min(maxPurchase, stock))) {
                 qtySelect.value = oldQty;
