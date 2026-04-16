@@ -10,6 +10,7 @@
                     <h3 class="card-title">Edit User</h3>
                 </div>
 
+                <!-- Edit User Form -->
                 <form action="{{ route('users.update', $user->id) }}" method="POST">
                     @csrf
                     @method('PUT')

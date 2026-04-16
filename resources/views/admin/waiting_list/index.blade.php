@@ -4,6 +4,7 @@
 
 @section('content')
     <div class="row">
+        <!-- Waiting List Index Page -->
         <div class="col-12">
 
             @if(session('success'))
@@ -34,6 +35,7 @@
                         </tr>
                         </thead>
                         <tbody>
+                        <!-- Waiting List Loop -->
                         @forelse($waitingLists as $list)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
@@ -42,6 +44,7 @@
                                 <td>{{ $list->ticketType->name ?? 'N/A' }}</td>
                                 <td>{{ $list->created_at->format('d M Y, H:i') }}</td>
                                 <td>
+                                    <!-- Status Conditional -->
                                     @if($list->status == 'waiting')
                                         <span class="badge badge-warning">Menunggu</span>
                                     @elseif($list->status == 'notified')

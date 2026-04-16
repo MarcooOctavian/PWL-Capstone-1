@@ -24,6 +24,7 @@
             </tr>
           </thead>
           <tbody>
+            <!-- Categories Iteration -->
             @foreach($categories as $category)
             <tr>
               <td>{{ $category->name }}</td>

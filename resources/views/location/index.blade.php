@@ -25,6 +25,7 @@
             </tr>
           </thead>
           <tbody>
+            <!-- Locations Iteration -->
             @foreach($locations as $location)
             <tr>
               <td>{{ $location->venue_name }}</td>

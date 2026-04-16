@@ -8,6 +8,7 @@
                     <h2>Pengajuan Organizer</h2>
                     <p>Ajukan diri Anda untuk menjadi organizer event</p>
                 </div>
+                <!-- Session Messages & Check Request Status Conditionally -->
                 @if(session('success'))
                     <div class="alert alert-success">
                         {{ session('success') }}
@@ -22,6 +23,7 @@
                     <div class="alert alert-warning text-center">
                         Permintaan Anda sedang diproses.
                     </div>
+                <!-- Form Rendering Conditional -->
                 @else
                     <form action="{{ route('organizer.request.store') }}" method="POST">
                         @csrf

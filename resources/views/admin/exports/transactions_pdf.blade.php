@@ -41,6 +41,7 @@
         <th width="20%">Tanggal & Waktu</th> </tr>
     </thead>
     <tbody>
+    <!-- Transactions Loop -->
     @forelse($transactions as $index => $trx)
         @php
             $firstTicket = $trx->tickets->first();
@@ -59,6 +60,7 @@
             <td class="text-center">{{ $totalTickets }}x</td>
             <td>Rp {{ number_format($trx->total_amount, 0, ',', '.') }}</td>
             <td class="text-center">
+                <!-- Translation/Status Tag Conditional Rendering -->
                 @if(in_array(strtolower($trx->payment_status), ['paid', 'success']))
                     <span class="badge badge-success">{{ ucfirst($trx->payment_status) }}</span>
                 @elseif(in_array(strtolower($trx->payment_status), ['pending', 'unpaid']))

@@ -24,6 +24,8 @@
 </head>
 @vite(['resources/js/app.js'])
 <body>
+
+<!-- Header Section -->
 <header class="header-section">
     <div class="container">
         <div class="logo">
@@ -31,6 +33,8 @@
                 Tickify<span style="color: #f1592a;">.</span>
             </a>
         </div>
+
+        <!-- Navigation Menu -->
         <div class="nav-menu">
             <nav class="mainmenu mobile-menu">
                 <ul>
@@ -47,10 +51,13 @@
                     @endauth
                 </ul>
             </nav>
+
+            <!-- Login/Register Button -->
             @guest
                 <a href="{{ route('login') }}" class="primary-btn top-btn">Login / Register</a>
             @endguest
 
+            <!-- Logout Button -->
             @auth
                 <form method="POST" action="{{ route('logout') }}" style="display: inline-block;">
                     @csrf
@@ -58,10 +65,12 @@
                 </form>
             @endauth
 
+            <!-- My Tickets Button -->
             @auth
                 <a href="/user-profile" class="primary-btn top-btn ml-2">My Tickets</a>
             @endauth
 
+            <!-- Control Panel Button -->
             @if(Auth::check() && Auth::user()->role != 3)
                 <a href="{{ url('/panel') }}" class="primary-btn top-btn ml-2" style="background: #28a745;">Control Panel</a>
             @endif
@@ -71,6 +80,7 @@
 </header>
 @yield('content')
 
+<!-- Footer Section -->
 <footer class="footer-section">
     <div class="container">
         <div class="partner-logo owl-carousel">

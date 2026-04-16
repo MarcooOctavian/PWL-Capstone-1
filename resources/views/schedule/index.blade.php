@@ -26,6 +26,7 @@
             </tr>
           </thead>
           <tbody>
+            <!-- Schedules Iteration -->
             @foreach($schedules as $schedule)
             <tr>
               <td>{{ $schedule->event->title ?? 'N/A' }}</td>

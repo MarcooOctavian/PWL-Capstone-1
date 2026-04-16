@@ -21,7 +21,7 @@
         <div class="container">
 
             @php
-                // Mencari tiket yang statusnya 'notified'
+                // Find tickets that have 'notified' status
                 $myWaitingList = \App\Models\WaitingList::where('user_id', auth()->id() ?? 1)
                     ->where('status', 'notified')
                     ->with('ticketType.event')
@@ -35,6 +35,7 @@
                             <h4 style="margin-top: 0; font-size: 18px;"><i class="fas fa-bell"></i> Pemberitahuan Kuota Tiket!</h4>
                             <p style="margin-bottom: 10px;">Tiket incaran Anda dari Waiting List sekarang <strong>TERSEDIA!</strong> Segera ambil sebelum hangus.</p>
 
+                            <!-- Waiting List Notification Loop -->
                             @foreach($myWaitingList as $wl)
                                 <div style="background: white; padding: 15px; border-radius: 5px; margin-top: 10px; border: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
                                     <div>
@@ -91,9 +92,10 @@
                                         </tr>
                                         </thead>
                                         <tbody>
+                                        <!-- Transaction History Loop -->
                                         @forelse($transactions as $transaction)
                                             @php
-                                                // Mengambil 1 tiket perwakilan untuk menampilkan nama event
+                                                // Get the first ticket to display the event name
                                                 $firstTicket = $transaction->tickets->first();
                                             @endphp
                                             <tr>

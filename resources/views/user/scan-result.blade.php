@@ -5,6 +5,7 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-12 col-md-6 col-lg-4">
+                    <!-- Ticket Status Checking Conditional -->
                     @if($ticket->status === 'valid')
                         <div style="border-top: 5px solid #28a745; padding: 30px 20px; border-radius: 10px; background: #fff; box-shadow: 0 5px 20px rgba(0,0,0,0.08); text-align: center;">
                             <div style="width: 60px; height: 60px; background: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
