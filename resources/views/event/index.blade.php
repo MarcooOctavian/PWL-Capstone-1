@@ -44,8 +44,8 @@
               <td>
                 @if($event->status == 'Upcoming' || $event->status == 'upcoming')
                     <span class="badge badge-primary">Upcoming</span>
-                @elseif($event->status == 'Ongoing' || $event->status == 'Ongoing')
-                    <span class="badge badge-secondary">Ongoing</span>
+                @elseif($event->status == 'Draft' || $event->status == 'draft')
+                    <span class="badge badge-secondary">Draft</span>
                 @else
                     <span class="badge badge-success">{{ ucfirst($event->status) }}</span>
                 @endif

@@ -53,7 +53,7 @@
                                 <label>Status</label>
                                 <select name="status" class="form-control @error('status') is-invalid @enderror" required>
                                     <option value="Upcoming" {{ old('status') == 'Upcoming' ? 'selected' : '' }}>Upcoming</option>
-                                    <option value="Ongoing" {{ old('status') == 'Ongoing' ? 'selected' : '' }}>Ongoing</option>
+                                    <option value="Draft" {{ old('status') == 'Draft' ? 'selected' : '' }}>Draft</option>
                                     <option value="Completed" {{ old('status') == 'Completed' ? 'selected' : '' }}>Completed</option>
                                 </select>
                                 @error('status')<div class="invalid-feedback">{{ $message }}</div>@enderror
