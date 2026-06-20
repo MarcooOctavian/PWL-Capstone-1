@@ -1,59 +1,192 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Project Capstone 1
 
-## About Laravel
+Project capstone ini bertujuan untuk membangun sebuah platform manajemen event dan penjualan tiket berbasis web yang memungkinkan:
+- Admin membuat dan mengelola event
+- Organizer memantau penjualan tiket
+- Pengguna melakukan registrasi, login, dan pembelian tiket
+- Sistem menghasilkan e-ticket dengan QR Code
+- Dashboard analitik penjualan secara real-time
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+##### **Fitur yang wajib diimplementasikan**
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+###### Authentication & Authorization
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Register & Login
+- Role: Admin, Organizer, User
+- Password hashing
+- Middleware route
 
-## Learning Laravel
+###### Manajemen Event
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- CRUD Event
+- Upload banner
+- Kategori event
+- Jadwal & lokasi
+- Kuota tiket
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+###### Sistem Ticketing
 
-## Laravel Sponsors
+- Pemilihan jenis tiket (VIP, Regular, dll.)
+- Manajemen stok otomatis
+- Generate e-ticket (QR Code)
+- Validasi tiket (scan simulation)
+- Queue & Waiting List
+- Pengiriman ticket dan QR ke email
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+###### Dashboard & Reporting
 
-### Premium Partners
+- Statistik penjualan
+- Grafik transaksi
+- Total revenue
+- Event performance analytics
+- Export report ke Excel atau PDF
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+###### Payment Integration
 
-## Contributing
+- Simulasi pembayaran
+- Status transaksi (pending, paid, failed)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+# Eventify — Platform Manajemen & Penjualan Tiket Event
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Aplikasi web berbasis **Laravel 12** untuk manajemen event dan penjualan tiket online. Pengunjung dapat menjelajahi event, membeli tiket, dan menerima **e-ticket ber-QR code**, sementara admin dan organizer mengelola event, tipe tiket, transaksi, hingga laporan penjualan melalui panel admin.
 
-## Security Vulnerabilities
+## Peran Pengguna (Roles)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Peran disimpan pada kolom `role` di tabel `users`:
 
-## License
+| Role | Nilai | Akses |
+|------|-------|-------|
+| **Admin** | `1` | Akses penuh: manajemen user, kategori, lokasi, persetujuan organizer, dan seluruh panel admin. |
+| **Organizer** | `2` | Mengelola event, jadwal, tipe tiket, dan waiting list. |
+| **User** | `3` | Membeli tiket, melihat e-ticket, bergabung waiting list, dan mengajukan menjadi organizer. |
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Otorisasi ditangani oleh `RoleMiddleware` dan `CheckUserStatus` middleware.
+
+## Teknologi
+
+- **PHP** ^8.2
+- **Laravel Framework** ^12.0
+- **Laravel Breeze** — scaffolding autentikasi
+- **MySQL** — basis data utama
+- **Blade + TailwindCSS 3 + Alpine.js** — frontend
+- **Vite 7** — bundling aset
+- **barryvdh/laravel-dompdf** — generate PDF
+- **maatwebsite/excel** — import/export Excel
+- **simplesoftwareio/simple-qrcode** — generate QR code tiket
+
+## Struktur Domain
+
+Model dan relasi inti aplikasi:
+
+- **User**: memiliki banyak `Transaction` dan `OrganizerRequest` (soft deletes).
+- **Event**: milik `User` (organizer), `Category`, `Location`; memiliki banyak `Schedule`, `TypeTicket`, dan `Ticket` (via `TypeTicket`).
+- **TypeTicket**: tipe/harga tiket dalam sebuah event.
+- **Transaction**: pembelian oleh user; menampung banyak `Ticket` dengan `payment_status`.
+- **Ticket**: tiket individual dengan `qr_code` dan `status`.
+- **WaitingList**: antrean pengguna ketika kuota habis.
+- **OrganizerRequest**: pengajuan user menjadi organizer.
+
+## Prasyarat
+
+- PHP **8.2+** beserta ekstensi standar Laravel
+- Composer
+- Node.js & npm
+- MySQL (atau MariaDB)
+
+## Instalasi
+
+```bash
+# 1. Clone repository
+git clone <repository-url>
+cd PWL-Capstone-1
+
+# 2. Install dependency PHP & JavaScript
+composer install
+npm install
+
+# 3. Siapkan environment
+cp .env.example .env
+php artisan key:generate
+```
+
+Sesuaikan konfigurasi database pada file `.env`:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=PWLCP1
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+Buat database (mis. `PWLCP1`) terlebih dahulu, lalu jalankan migrasi dan seeder:
+
+```bash
+php artisan migrate --seed
+```
+
+> Alternatif cepat: `composer run setup` menjalankan install, key generate, migrate, dan build aset sekaligus.
+
+## Menjalankan Aplikasi
+
+**Cara cepat (semua proses sekaligus)** — server, queue, log, dan Vite:
+
+```bash
+composer run dev
+```
+
+**Cara manual (dua terminal):**
+
+```bash
+# Terminal 1 — Laravel server
+php artisan serve
+
+# Terminal 2 — Vite dev server
+npm run dev
+```
+
+Aplikasi tersedia di `http://localhost:8000`.
+
+## Akun Default (Seeder)
+
+Setelah menjalankan seeder, tersedia akun berikut (password semua: `password`):
+
+| Peran | Email | Password |
+|-------|-------|----------|
+| Admin | `admin@eventify.com` | `password` |
+| Organizer | `budi@eventify.com` | `password` |
+| Organizer | `sari@eventify.com` | `password` |
+| User | `andi@mail.com` | `password` |
+
+> Login admin/organizer melalui rute `/login-admin`.
+
+## Rute Penting
+
+| Rute | Deskripsi |
+|------|-----------|
+| `/` | Beranda publik & daftar event mendatang |
+| `/events` | Katalog event publik |
+| `/login-admin` | Login admin & organizer |
+| `/register` | Registrasi pengguna |
+| `/panel` | Dashboard admin |
+| `/checkout` | Alur pembelian tiket |
+| `/e-ticket/{id}` | Tampilan e-ticket dengan QR code |
+| `/scan/{qr_code}` | Pemindaian & validasi tiket |
+| `/export/excel`, `/export/pdf` | Ekspor laporan |
+
+## Testing
+
+```bash
+composer run test
+# atau
+php artisan test
+```
+
+---
+
+Dibangun dengan Laravel sebagai proyek Capstone Pemrograman Web Lanjut.
